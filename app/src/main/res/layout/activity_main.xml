@@ -5,15 +5,55 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="16dp"
     tools:context=".MainActivity">
 
     <TextView
+        android:id="@+id/welcomeText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        android:text="Welcome to HIIT HERO"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:layout_marginTop="50dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/workoutButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Start Workout"
+        android:layout_marginTop="50dp"
+        android:padding="16dp"
+        app:layout_constraintWidth_percent="0.7"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/welcomeText" />
+
+    <Button
+        android:id="@+id/statisticsButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Statistics"
+        android:layout_marginTop="16dp"
+        android:padding="16dp"
+        app:layout_constraintWidth_percent="0.7"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/workoutButton" />
+
+    <Button
+        android:id="@+id/personalDataButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Personal Data"
+        android:layout_marginTop="16dp"
+        android:padding="16dp"
+        app:layout_constraintWidth_percent="0.7"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/statisticsButton" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
