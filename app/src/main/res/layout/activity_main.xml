@@ -12,10 +12,10 @@
         android:id="@+id/welcomeText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Welcome to HIIT HERO"
+        android:layout_marginTop="50dp"
+        android:text="HIIT HERO"
         android:textSize="24sp"
         android:textStyle="bold"
-        android:layout_marginTop="50dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -24,36 +24,44 @@
         android:id="@+id/workoutButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Start Workout"
         android:layout_marginTop="50dp"
         android:padding="16dp"
-        app:layout_constraintWidth_percent="0.7"
+        android:text="Workouts"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/welcomeText" />
+        app:layout_constraintTop_toBottomOf="@id/welcomeText"
+        app:layout_constraintWidth_percent="0.7" />
 
     <Button
         android:id="@+id/statisticsButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Statistics"
         android:layout_marginTop="16dp"
         android:padding="16dp"
-        app:layout_constraintWidth_percent="0.7"
+        android:text="Historie/Fortschritt"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/workoutButton" />
+        app:layout_constraintTop_toBottomOf="@id/workoutButton"
+        app:layout_constraintWidth_percent="0.7" />
 
     <Button
         android:id="@+id/personalDataButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Personal Data"
         android:layout_marginTop="16dp"
         android:padding="16dp"
-        app:layout_constraintWidth_percent="0.7"
+        android:text="Persönliche Daten"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/statisticsButton" />
+        app:layout_constraintTop_toBottomOf="@id/statisticsButton"
+        app:layout_constraintWidth_percent="0.7" />
+
+    <ImageButton
+        android:id="@+id/imageButton3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@android:drawable/ic_menu_manage"
+        tools:layout_editor_absoluteX="329dp"
+        tools:layout_editor_absoluteY="654dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
