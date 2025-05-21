@@ -13,6 +13,33 @@
         android:theme="@style/Theme.HIIT_Hero"
         tools:targetApi="31">
         <activity
+            android:name=".Workouts"
+            android:exported="false" />
+        <activity
+            android:name=".WorkoutListe"
+            android:exported="false" />
+        <activity
+            android:name=".WorkoutErstellen"
+            android:exported="false" />
+        <activity
+            android:name=".WorkoutAnsicht"
+            android:exported="false" />
+        <activity
+            android:name=".VordefinierteWorkouts"
+            android:exported="false" />
+        <activity
+            android:name=".UebungenListe"
+            android:exported="false" />
+        <activity
+            android:name=".UebungAnsicht"
+            android:exported="false" />
+        <activity
+            android:name=".DieUebungen"
+            android:exported="false" />
+        <activity
+            android:name=".DeineWorkouts"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
