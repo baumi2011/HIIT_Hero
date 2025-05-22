@@ -16,7 +16,7 @@
             android:name=".FortschrittDiagrammActivity"
             android:exported="false" />
         <activity
-            android:name=".AdapterWorkout"
+            android:name=".WorkoutAdapter"
             android:exported="false" />
         <activity
             android:name=".FortschritteActivity"

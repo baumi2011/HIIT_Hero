@@ -32,12 +32,6 @@ public class FortschritteActivity extends AppCompatActivity {
         weeklyRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         monthlyRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        // Set up chart button
-        Button viewChartButton = findViewById(R.id.viewChartButton);
-        viewChartButton.setOnClickListener(v -> {
-            Intent intent = new Intent(this, FortschrittDiagrammActivity.class);
-            startActivity(intent);
-        });
 
         // Load workout data
         List<WorkoutSession> weeklyWorkouts = getDummyWeeklyWorkouts();
