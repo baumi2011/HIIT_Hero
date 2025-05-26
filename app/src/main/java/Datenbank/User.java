@@ -4,16 +4,22 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-@Entity
+@Entity(tableName = "users")
 public class User {
 
     @PrimaryKey (autoGenerate = true)
-    public int uid;
+    public int id;
 
-    @ColumnInfo(name = "first_name")
-    public String firstName;
+    @ColumnInfo(name = "name")
+    public String name;
 
-    @ColumnInfo(name = "last_name")
-    public String lastName;
+    @ColumnInfo(name = "age")
+    public int age;
+
+    @ColumnInfo(name = "weight")
+    public float weight;
+
+    @ColumnInfo(name = "height")
+    public float height;
 
 }

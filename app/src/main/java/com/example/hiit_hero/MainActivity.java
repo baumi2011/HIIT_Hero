@@ -12,13 +12,35 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+import Datenbank.DAO;
+import Datenbank.DatenbaseApp;
+import Datenbank.User;
+
 public class MainActivity extends AppCompatActivity {
+
+    private DatenbaseApp db;
+    private DAO userDao;
+    private ExecutorService executorService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
+
+        // Initialisiere Datenbank und DAO
+        try {
+            db = DatenbaseApp.getDatabase(getApplicationContext());
+            userDao = db.userDao();
+            executorService = Executors.newSingleThreadExecutor();
+        } catch (Exception e) {
+            Toast.makeText(this, "Datenbankfehler: " + e.getMessage(), Toast.LENGTH_LONG).show();
+            e.printStackTrace();
+        }
 
         // Set up window insets
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
@@ -52,5 +74,13 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(this, SettingsActivity.class);
             startActivity(intent);
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (executorService != null) {
+            executorService.shutdown();
+        }
     }
 }
