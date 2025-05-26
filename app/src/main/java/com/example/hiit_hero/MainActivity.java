@@ -11,8 +11,23 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.room.Room;
+
+import java.util.List;
+
+import Datenbank.DAO;
+import Datenbank.DatenbaseApp;
+import Datenbank.User;
 
 public class MainActivity extends AppCompatActivity {
+
+    DatenbaseApp db = Room.databaseBuilder(getApplicationContext(),
+            DatenbaseApp.class, "database-name").build();
+
+    DAO userDao = db.userDao();
+    List<User> users = userDao.getAll();
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
