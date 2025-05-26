@@ -49,8 +49,8 @@ public class MainActivity extends AppCompatActivity {
         });
 
         settingsButton.setOnClickListener(v -> {
-            // TODO: Implement SettingsActivity
-            Toast.makeText(this, "Einstellungen werden geladen...", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(this, SettingsActivity.class);
+            startActivity(intent);
         });
     }
 }
