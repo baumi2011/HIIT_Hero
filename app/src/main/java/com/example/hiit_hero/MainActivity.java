@@ -1,9 +1,9 @@
 package com.example.hiit_hero;
 
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -11,8 +11,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-
-import com.google.android.material.card.MaterialCardView;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -29,23 +27,23 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
-        // Set up click listeners for all cards
-        MaterialCardView workoutsCard = findViewById(R.id.workoutsCard);
-        MaterialCardView progressCard = findViewById(R.id.progressCard);
-        MaterialCardView profileCard = findViewById(R.id.profileCard);
+        // Set up click listeners for all buttons
+        Button workoutsButton = findViewById(R.id.workoutsCard);
+        Button progressButton = findViewById(R.id.progressCard);
+        Button profileButton = findViewById(R.id.profileCard);
         View settingsButton = findViewById(R.id.settingsButton);
 
-        workoutsCard.setOnClickListener(v -> {
-            // TODO: Implement WorkoutsActivity
-            Toast.makeText(this, "Workouts werden geladen...", Toast.LENGTH_SHORT).show();
+        workoutsButton.setOnClickListener(v -> {
+            Intent intent = new Intent(this, Workouts.class);
+            startActivity(intent);
         });
 
-        progressCard.setOnClickListener(v -> {
+        progressButton.setOnClickListener(v -> {
             Intent intent = new Intent(this, FortschritteActivity.class);
             startActivity(intent);
         });
 
-        profileCard.setOnClickListener(v -> {
+        profileButton.setOnClickListener(v -> {
             Intent intent = new Intent(this, ProfilActivity.class);
             startActivity(intent);
         });

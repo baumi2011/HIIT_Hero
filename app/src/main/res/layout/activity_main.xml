@@ -20,95 +20,38 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <com.google.android.material.card.MaterialCardView
+    <Button
         android:id="@+id/workoutsCard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
-        app:layout_constraintTop_toBottomOf="@id/welcomeText"
-        app:cardCornerRadius="8dp"
-        app:cardElevation="4dp">
+        android:padding="16dp"
+        android:text="Workouts\nStarte dein nächstes HIIT Workout"
+        android:textAlignment="textStart"
+        android:gravity="start"
+        app:layout_constraintTop_toBottomOf="@id/welcomeText" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="16dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Workouts"
-                android:textSize="20sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Starte dein nächstes HIIT Workout"
-                android:textSize="14sp" />
-        </LinearLayout>
-    </com.google.android.material.card.MaterialCardView>
-
-    <com.google.android.material.card.MaterialCardView
+    <Button
         android:id="@+id/progressCard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        app:layout_constraintTop_toBottomOf="@id/workoutsCard"
-        app:cardCornerRadius="8dp"
-        app:cardElevation="4dp">
+        android:padding="16dp"
+        android:text="Historie &amp; Fortschritte\nVerfolge deine Erfolge"
+        android:textAlignment="textStart"
+        android:gravity="start"
+        app:layout_constraintTop_toBottomOf="@id/workoutsCard" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="16dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Historie &amp; Fortschritte"
-                android:textSize="20sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Verfolge deine Erfolge"
-                android:textSize="14sp" />
-        </LinearLayout>
-    </com.google.android.material.card.MaterialCardView>
-
-    <com.google.android.material.card.MaterialCardView
+    <Button
         android:id="@+id/profileCard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        app:layout_constraintTop_toBottomOf="@id/progressCard"
-        app:cardCornerRadius="8dp"
-        app:cardElevation="4dp">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="16dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Persönliche Daten"
-                android:textSize="20sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Verwalte deine persönlichen Informationen"
-                android:textSize="14sp" />
-        </LinearLayout>
-    </com.google.android.material.card.MaterialCardView>
+        android:padding="16dp"
+        android:text="Persönliche Daten\nVerwalte deine persönlichen Informationen"
+        android:textAlignment="textStart"
+        android:gravity="start"
+        app:layout_constraintTop_toBottomOf="@id/progressCard" />
 
     <ImageButton
         android:id="@+id/settingsButton"
