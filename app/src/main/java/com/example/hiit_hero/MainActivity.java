@@ -75,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         });
     }
-//test
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
