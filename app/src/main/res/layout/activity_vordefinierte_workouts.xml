@@ -99,4 +99,13 @@
         app:layout_constraintTop_toBottomOf="@id/caloriesLayout"
         app:layout_constraintWidth_percent="0.7" />
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/workoutsRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/workoutNameLayout"
+        tools:listitem="@layout/activity_workout_liste" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

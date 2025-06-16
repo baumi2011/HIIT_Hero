@@ -19,7 +19,7 @@
             android:name=".PauseActivity"
             android:exported="false" />
         <activity
-            android:name=".ExerciseActivity"
+            android:name=".Exercise"
             android:exported="false" />
         <activity
             android:name=".WorkoutAdapter"

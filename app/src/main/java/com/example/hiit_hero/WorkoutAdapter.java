@@ -12,10 +12,19 @@ import java.util.List;
 public class WorkoutAdapter extends RecyclerView.Adapter<WorkoutAdapter.WorkoutViewHolder> {
     private List<WorkoutSession> workouts;
     private SimpleDateFormat dateFormat;
+    private OnItemClickListener listener;
+
+    public interface OnItemClickListener {
+        void onItemClick(WorkoutSession workout);
+    }
 
     public WorkoutAdapter(List<WorkoutSession> workouts, SimpleDateFormat dateFormat) {
         this.workouts = workouts;
         this.dateFormat = dateFormat;
+    }
+
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.listener = listener;
     }
 
     @NonNull
@@ -31,8 +40,15 @@ public class WorkoutAdapter extends RecyclerView.Adapter<WorkoutAdapter.WorkoutV
         WorkoutSession workout = workouts.get(position);
         holder.nameText.setText(workout.getName());
         holder.durationText.setText(workout.getDuration());
-        holder.dateText.setText(dateFormat.format(workout.getTimestamp()));
+        holder.dateText.setText(dateFormat.format(workout.getDate()));
         holder.caloriesText.setText(workout.getCaloriesBurned() + " kcal");
+
+        // Setze den Click-Listener für das Item
+        holder.itemView.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onItemClick(workout);
+            }
+        });
     }
 
     @Override
