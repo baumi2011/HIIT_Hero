@@ -138,6 +138,32 @@ public class VordefinierteWorkouts extends AppCompatActivity {
         startWorkoutButton.setOnClickListener(v -> {
             // Navigiere zur Exercise-Activity
             Intent intent = new Intent(VordefinierteWorkouts.this, Exercise.class);
+            // Übergebe den Namen der ersten Übung und die komplette Übungsliste
+            String selectedWorkout = workoutNameInput.getText().toString();
+            if (!selectedWorkout.isEmpty()) {
+                for (WorkoutSession workout : workouts) {
+                    if (workout.getName().equals(selectedWorkout)) {
+                        List<String> exercises = workout.getExercises();
+                        if (!exercises.isEmpty()) {
+                            intent.putExtra("EXERCISE_NAME", exercises.get(0));
+                            intent.putStringArrayListExtra("exercises", new ArrayList<>(exercises));
+                            intent.putExtra("currentExerciseIndex", 0);
+                            
+                            // Übergebe die Workout-Werte direkt aus dem WorkoutSession-Objekt
+                            String duration = workout.getDuration();
+                            int calories = workout.getCaloriesBurned();
+                            
+                            // Debug-Ausgabe
+                            System.out.println("Workout Duration: " + duration);
+                            System.out.println("Workout Calories: " + calories);
+                            
+                            intent.putExtra("workoutDuration", duration);
+                            intent.putExtra("workoutCalories", calories);
+                            break;
+                        }
+                    }
+                }
+            }
             startActivity(intent);
         });
     }

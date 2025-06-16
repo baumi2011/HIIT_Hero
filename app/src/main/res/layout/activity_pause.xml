@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp">
+    android:padding="16dp"
+    tools:context=".PauseActivity">
 
     <TextView
-        android:id="@+id/breakTitleText"
+        android:id="@+id/pauseTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Pause"
@@ -18,37 +21,25 @@
         app:layout_constraintEnd_toEndOf="parent" />
 
     <TextView
-        android:id="@+id/timerText"
+        android:id="@+id/pauseTimer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="00:15"
         android:textSize="48sp"
         android:textStyle="bold"
         android:layout_marginTop="32dp"
-        app:layout_constraintTop_toBottomOf="@id/breakTitleText"
+        app:layout_constraintTop_toBottomOf="@id/pauseTitle"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
     <TextView
-        android:id="@+id/nextExerciseTitle"
+        android:id="@+id/nextExerciseText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Nächste Übung:"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:layout_marginTop="32dp"
-        app:layout_constraintTop_toBottomOf="@id/timerText"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <TextView
-        android:id="@+id/nextExerciseName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Übung 2"
+        android:text="Nächste Übung: "
         android:textSize="18sp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@id/nextExerciseTitle"
+        android:layout_marginTop="32dp"
+        app:layout_constraintTop_toBottomOf="@id/pauseTimer"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -56,22 +47,20 @@
         android:id="@+id/nextExerciseImage"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="32dp"
         android:layout_marginBottom="32dp"
         android:background="@android:color/darker_gray"
         android:scaleType="centerCrop"
-        app:layout_constraintTop_toBottomOf="@id/nextExerciseName"
-        app:layout_constraintBottom_toTopOf="@id/stopButton"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/continueButton"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintWidth_percent="0.8"
-        app:layout_constraintHeight_percent="0.4" />
+        app:layout_constraintHeight_percent="0.4"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintWidth_percent="0.8" />
 
     <Button
-        android:id="@+id/stopButton"
+        android:id="@+id/continueButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Stop"
+        android:text="Weiter"
         android:layout_marginBottom="32dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
