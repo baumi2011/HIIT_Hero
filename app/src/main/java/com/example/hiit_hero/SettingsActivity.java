@@ -7,10 +7,20 @@ import android.widget.Switch;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.lang.reflect.Type;
+import java.util.List;
 
 public class SettingsActivity extends AppCompatActivity {
     private SharedPreferences sharedPreferences;
@@ -85,28 +95,84 @@ public class SettingsActivity extends AppCompatActivity {
 
         // Button listeners
         findViewById(R.id.backupButton).setOnClickListener(v -> {
-            // TODO: Implement backup functionality
-            Toast.makeText(this, "Backup-Funktion wird implementiert...", Toast.LENGTH_SHORT).show();
+            // Workouts als JSON speichern
+            Gson gson = new Gson();
+            String json = gson.toJson(DeineWorkouts.eigeneWorkouts);
+            File file = new File(getFilesDir(), "workouts_backup.json");
+            try (FileOutputStream fos = new FileOutputStream(file)) {
+                fos.write(json.getBytes());
+                new AlertDialog.Builder(this)
+                    .setTitle("Backup erfolgreich")
+                    .setMessage("Deine Workouts wurden erfolgreich gesichert!\nDateipfad: " + file.getAbsolutePath())
+                    .setPositiveButton("OK", null)
+                    .show();
+            } catch (IOException e) {
+                new AlertDialog.Builder(this)
+                    .setTitle("Fehler beim Sichern")
+                    .setMessage("Es ist ein Fehler beim Sichern aufgetreten: " + e.getMessage())
+                    .setPositiveButton("OK", null)
+                    .show();
+            }
         });
 
         findViewById(R.id.restoreButton).setOnClickListener(v -> {
-            // TODO: Implement restore functionality
-            Toast.makeText(this, "Wiederherstellungsfunktion wird implementiert...", Toast.LENGTH_SHORT).show();
+            // Workouts aus JSON wiederherstellen
+            File file = new File(getFilesDir(), "workouts_backup.json");
+            if (!file.exists()) {
+                new AlertDialog.Builder(this)
+                    .setTitle("Keine Sicherung gefunden")
+                    .setMessage("Es wurde noch kein Backup erstellt.")
+                    .setPositiveButton("OK", null)
+                    .show();
+                return;
+            }
+            try (FileInputStream fis = new FileInputStream(file)) {
+                byte[] data = new byte[(int) file.length()];
+                fis.read(data);
+                String json = new String(data);
+                Gson gson = new Gson();
+                Type listType = new TypeToken<List<WorkoutSession>>(){}.getType();
+                List<WorkoutSession> restored = gson.fromJson(json, listType);
+                if (restored != null) {
+                    DeineWorkouts.eigeneWorkouts.clear();
+                    DeineWorkouts.eigeneWorkouts.addAll(restored);
+                    new AlertDialog.Builder(this)
+                        .setTitle("Wiederherstellung erfolgreich")
+                        .setMessage("Deine Workouts wurden erfolgreich wiederhergestellt!")
+                        .setPositiveButton("OK", null)
+                        .show();
+                }
+            } catch (IOException e) {
+                new AlertDialog.Builder(this)
+                    .setTitle("Fehler beim Wiederherstellen")
+                    .setMessage("Es ist ein Fehler beim Wiederherstellen aufgetreten: " + e.getMessage())
+                    .setPositiveButton("OK", null)
+                    .show();
+            }
         });
 
         findViewById(R.id.aboutButton).setOnClickListener(v -> {
-            // TODO: Show about dialog
-            Toast.makeText(this, "Über HIIT Hero", Toast.LENGTH_SHORT).show();
+            new AlertDialog.Builder(this)
+                .setTitle("Über HIIT Hero")
+                .setMessage("HIIT Hero ist deine persönliche Fitness-App für effektives High-Intensity Intervall Training (HIIT). Egal ob Anfänger oder Profi – mit HIIT Hero kannst du individuelle Workouts erstellen, deine Fortschritte verfolgen und dich immer wieder neu motivieren. Unser Ziel ist es, dir ein abwechslungsreiches, motivierendes und gesundes Trainingserlebnis zu bieten. Viel Spaß beim Schwitzen und Erreichen deiner Fitnessziele!")
+                .setPositiveButton("OK", null)
+                .show();
         });
 
         findViewById(R.id.privacyPolicyButton).setOnClickListener(v -> {
-            // TODO: Show privacy policy
-            Toast.makeText(this, "Datenschutzerklärung wird angezeigt...", Toast.LENGTH_SHORT).show();
+            new AlertDialog.Builder(this)
+                .setTitle("Datenschutzerklärung")
+                .setMessage("Der Schutz deiner Daten ist uns sehr wichtig. HIIT Hero speichert deine Trainingsdaten ausschließlich lokal auf deinem Gerät. Es werden keine persönlichen Daten an Dritte weitergegeben oder auf externe Server übertragen. Wir verwenden keine Tracker oder Werbenetzwerke. Du hast jederzeit die Kontrolle über deine Daten und kannst sie auf Wunsch löschen. Bei Fragen zum Datenschutz kannst du uns jederzeit kontaktieren.")
+                .setPositiveButton("OK", null)
+                .show();
         });
 
         findViewById(R.id.termsButton).setOnClickListener(v -> {
-            // TODO: Show terms and conditions
-            Toast.makeText(this, "Nutzungsbedingungen werden angezeigt...", Toast.LENGTH_SHORT).show();
+            new AlertDialog.Builder(this)
+                .setTitle("Nutzungsbedingungen")
+                .setMessage("Mit der Nutzung von HIIT Hero erklärst du dich damit einverstanden, die App ausschließlich für private, nicht-kommerzielle Zwecke zu verwenden. Die bereitgestellten Trainingspläne und Inhalte dienen ausschließlich der Information und Motivation. Die Nutzung erfolgt auf eigene Verantwortung. Bei gesundheitlichen Bedenken konsultiere bitte vor Trainingsbeginn einen Arzt. Wir übernehmen keine Haftung für Verletzungen oder Schäden, die durch die Nutzung der App entstehen.")
+                .setPositiveButton("OK", null)
+                .show();
         });
     }
 } 

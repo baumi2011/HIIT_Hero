@@ -2,13 +2,16 @@ package com.example.hiit_hero;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -27,51 +30,48 @@ public class FortschritteActivity extends AppCompatActivity {
         // Initialize RecyclerViews
         weeklyRecyclerView = findViewById(R.id.weeklyRecyclerView);
         monthlyRecyclerView = findViewById(R.id.monthlyRecyclerView);
+        TextView weeklyEmptyText = findViewById(R.id.weeklyEmptyText);
+        TextView monthlyEmptyText = findViewById(R.id.monthlyEmptyText);
 
         // Set layout managers
         weeklyRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         monthlyRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
+        // Workouts aus DeineWorkouts holen
+        List<WorkoutSession> allWorkouts = DeineWorkouts.eigeneWorkouts;
+        List<WorkoutSession> weeklyWorkouts = new ArrayList<>();
+        List<WorkoutSession> monthlyWorkouts = new ArrayList<>();
+        Date now = new Date();
+        long millisInDay = 24 * 60 * 60 * 1000L;
 
-        // Load workout data
-        List<WorkoutSession> weeklyWorkouts = getDummyWeeklyWorkouts();
-        List<WorkoutSession> monthlyWorkouts = getDummyMonthlyWorkouts();
+        for (WorkoutSession ws : allWorkouts) {
+            long diff = now.getTime() - ws.getDate().getTime();
+            if (diff <= 7 * millisInDay) {
+                weeklyWorkouts.add(ws);
+            } else if (diff <= 31 * millisInDay) {
+                monthlyWorkouts.add(ws);
+            }
+        }
 
-        // Set adapters
-        WorkoutAdapter weeklyAdapter = new WorkoutAdapter(weeklyWorkouts, dateFormat);
-        WorkoutAdapter monthlyAdapter = new WorkoutAdapter(monthlyWorkouts, dateFormat);
+        // Anzeige-Logik
+        if (!weeklyWorkouts.isEmpty()) {
+            weeklyRecyclerView.setVisibility(View.VISIBLE);
+            weeklyEmptyText.setVisibility(View.GONE);
+            WorkoutAdapter weeklyAdapter = new WorkoutAdapter(weeklyWorkouts, dateFormat);
+            weeklyRecyclerView.setAdapter(weeklyAdapter);
+        } else {
+            weeklyRecyclerView.setVisibility(View.GONE);
+            weeklyEmptyText.setVisibility(View.VISIBLE);
+        }
 
-        weeklyRecyclerView.setAdapter(weeklyAdapter);
-        monthlyRecyclerView.setAdapter(monthlyAdapter);
-    }
-
-    private List<WorkoutSession> getDummyWeeklyWorkouts() {
-        List<WorkoutSession> workouts = new ArrayList<>();
-        Calendar calendar = Calendar.getInstance();
-
-        // Add today's workout
-        workouts.add(new WorkoutSession("HIIT Cardio", "30 Minuten", calendar.getTime(), 300));
-
-        // Add yesterday's workout
-        calendar.add(Calendar.DAY_OF_YEAR, -1);
-        workouts.add(new WorkoutSession("HIIT Strength", "45 Minuten", calendar.getTime(), 400));
-
-        return workouts;
-    }
-
-    private List<WorkoutSession> getDummyMonthlyWorkouts() {
-        List<WorkoutSession> workouts = new ArrayList<>();
-        Calendar calendar = Calendar.getInstance();
-
-        // Add workouts from the last month
-        workouts.add(new WorkoutSession("HIIT Cardio", "30 Minuten", calendar.getTime(), 300));
-
-        calendar.add(Calendar.DAY_OF_YEAR, -2);
-        workouts.add(new WorkoutSession("HIIT Strength", "45 Minuten", calendar.getTime(), 400));
-
-        calendar.add(Calendar.DAY_OF_YEAR, -5);
-        workouts.add(new WorkoutSession("HIIT Cardio", "30 Minuten", calendar.getTime(), 350));
-
-        return workouts;
+        if (weeklyWorkouts.isEmpty() && !monthlyWorkouts.isEmpty()) {
+            monthlyRecyclerView.setVisibility(View.VISIBLE);
+            monthlyEmptyText.setVisibility(View.GONE);
+            WorkoutAdapter monthlyAdapter = new WorkoutAdapter(monthlyWorkouts, dateFormat);
+            monthlyRecyclerView.setAdapter(monthlyAdapter);
+        } else {
+            monthlyRecyclerView.setVisibility(View.GONE);
+            monthlyEmptyText.setVisibility(View.VISIBLE);
+        }
     }
 }

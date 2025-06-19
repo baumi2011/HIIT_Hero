@@ -84,10 +84,6 @@ public class Exercise extends AppCompatActivity {
 
             @Override
             public void onFinish() {
-                isTimerRunning = false;
-                timeLeftInMillis = 30000; // Reset auf 30 Sekunden
-                updateCountDownText();
-                // Navigiere zur PauseActivity
                 navigateToPause();
             }
         }.start();

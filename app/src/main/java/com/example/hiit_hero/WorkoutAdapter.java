@@ -13,9 +13,17 @@ public class WorkoutAdapter extends RecyclerView.Adapter<WorkoutAdapter.WorkoutV
     private List<WorkoutSession> workouts;
     private SimpleDateFormat dateFormat;
     private OnItemClickListener listener;
-
+    private boolean longClickActive = false;
     public interface OnItemClickListener {
         void onItemClick(WorkoutSession workout);
+    }
+
+    public interface OnItemLongClickListener {
+        void onItemLongClick(int position);
+    }
+    private OnItemLongClickListener longClickListener;
+    public void setOnItemLongClickListener(OnItemLongClickListener listener) {
+        this.longClickListener = listener;
     }
 
     public WorkoutAdapter(List<WorkoutSession> workouts, SimpleDateFormat dateFormat) {
@@ -45,9 +53,22 @@ public class WorkoutAdapter extends RecyclerView.Adapter<WorkoutAdapter.WorkoutV
 
         // Setze den Click-Listener für das Item
         holder.itemView.setOnClickListener(v -> {
+            if (longClickActive) {
+                longClickActive = false;
+                return;
+            }
             if (listener != null) {
                 listener.onItemClick(workout);
             }
+        });
+        // Setze den LongClick-Listener für das Item
+        holder.itemView.setOnLongClickListener(v -> {
+            if (longClickListener != null) {
+                longClickActive = true;
+                longClickListener.onItemLongClick(position);
+                return true;
+            }
+            return false;
         });
     }
 
