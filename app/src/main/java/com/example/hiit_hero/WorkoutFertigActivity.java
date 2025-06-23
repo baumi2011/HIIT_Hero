@@ -1,6 +1,7 @@
 package com.example.hiit_hero;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
@@ -33,18 +34,25 @@ public class WorkoutFertigActivity extends AppCompatActivity {
         durationText = findViewById(R.id.durationText);
         saveWorkoutButton = findViewById(R.id.saveWorkoutButton);
 
-        // Setze den festen Text für congratsText
-        congratsText.setText("Geschafft!");
-
         // Hole die übergebenen Workout-Werte
         String workoutDuration = getIntent().getStringExtra("workoutDuration");
         int workoutCalories = getIntent().getIntExtra("workoutCalories", 0);
+        boolean workoutAborted = getIntent().getBooleanExtra("workoutAborted", false);
 
         // Aktualisiere die Texte mit den Werten
-        if (workoutDuration != null) {
-            durationText.setText("Gesamtzeit: " + workoutDuration);
+        if (workoutAborted) {
+            congratsText.setText("Workout abgebrochen");
+            congratsText.setTextColor(Color.RED);
+            durationText.setText("Gesamtzeit: 0");
+            caloriesText.setText("Verbrannte Kalorien: 0 kcal");
+        } else {
+            congratsText.setText("Geschafft!");
+            congratsText.setTextColor(Color.GREEN);
+            if (workoutDuration != null) {
+                durationText.setText("Gesamtzeit: " + workoutDuration);
+            }
+            caloriesText.setText("Verbrannte Kalorien: " + workoutCalories + " kcal");
         }
-        caloriesText.setText("Verbrannte Kalorien: " + workoutCalories + " kcal");
 
         // Setze den Click-Listener für den Save-Button
         saveWorkoutButton.setOnClickListener(v -> {

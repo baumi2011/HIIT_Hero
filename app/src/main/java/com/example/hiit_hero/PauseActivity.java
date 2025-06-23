@@ -11,11 +11,13 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import java.util.ArrayList;
+import android.app.AlertDialog;
 
 public class PauseActivity extends AppCompatActivity {
     private TextView pauseTimer;
     private TextView nextExerciseText;
     private Button controlButton;
+    private Button abortButton;
     private CountDownTimer countDownTimer;
     private boolean isTimerRunning = false;
     private long timeLeftInMillis = 5000; // 5 Sekunden
@@ -41,6 +43,7 @@ public class PauseActivity extends AppCompatActivity {
         pauseTimer = findViewById(R.id.pauseTimer);
         nextExerciseText = findViewById(R.id.nextExerciseText);
         controlButton = findViewById(R.id.continueButton);
+        abortButton = findViewById(R.id.abortButton);
         controlButton.setText("Stop");
 
         // Zeige die nächste Übung an
@@ -57,6 +60,19 @@ public class PauseActivity extends AppCompatActivity {
                 startTimer();
             }
         });
+
+        abortButton.setOnClickListener(v -> {
+            Intent intent = new Intent(PauseActivity.this, WorkoutFertigActivity.class);
+            intent.putExtra("workoutAborted", true);
+            // Übergebe die Workout-Werte
+            String duration = getIntent().getStringExtra("workoutDuration");
+            int calories = getIntent().getIntExtra("workoutCalories", 0);
+            intent.putExtra("workoutDuration", duration);
+            intent.putExtra("workoutCalories", calories);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            finish();
+        });
     }
 
     private void updateNextExercise() {
@@ -66,6 +82,14 @@ public class PauseActivity extends AppCompatActivity {
                 nextExerciseText.setText("Letzte Übung: " + nextExercise);
             } else {
                 nextExerciseText.setText("Nächste Übung: " + nextExercise);
+            }
+            // Hinweis für Jumping Jacks
+            if (nextExercise.equalsIgnoreCase("Jumping Jacks")) {
+                new AlertDialog.Builder(this)
+                        .setTitle("Achtung")
+                        .setMessage("Die nächste Übung nutzt den Bewegungssensor! Halte das Handy in der Hand.")
+                        .setPositiveButton("OK", null)
+                        .show();
             }
         } else {
             nextExerciseText.setText("Workout beenden");
