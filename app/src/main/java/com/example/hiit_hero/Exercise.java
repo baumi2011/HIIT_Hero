@@ -8,6 +8,7 @@ import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,6 +19,8 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import java.util.ArrayList;
+
+import com.bumptech.glide.Glide;
 
 public class Exercise extends AppCompatActivity implements SensorEventListener {
     private TextView exerciseNameText;
@@ -53,11 +56,34 @@ public class Exercise extends AppCompatActivity implements SensorEventListener {
         startButton = findViewById(R.id.startButton);
         stopButton = findViewById(R.id.stopButton);
         abortButton = findViewById(R.id.abortButton);
+        ImageView exerciseImage = findViewById(R.id.exerciseImage);
 
         // Hole den Übungsnamen aus dem Intent
         String exerciseName = getIntent().getStringExtra("EXERCISE_NAME");
         if (exerciseName != null) {
             exerciseNameText.setText(exerciseName);
+            int imageRes = R.drawable.ic_launcher_foreground;
+            switch (exerciseName) {
+                case "Liegestütze":
+                    imageRes = R.drawable.pushups;
+                    break;
+                case "Plank":
+                    imageRes = R.drawable.plank;
+                    break;
+                case "Jumping Jacks":
+                    imageRes = R.drawable.jumpingjacks;
+                    break;
+                case "Burpees":
+                    imageRes = R.drawable.burpees;
+                    break;
+                case "Kniebeugen":
+                    imageRes = R.drawable.kniebeugen;
+                    break;
+                case "Mountain Climbers":
+                    imageRes = R.drawable.mountainclimbers;
+                    break;
+            }
+            Glide.with(this).asGif().load(imageRes).into(exerciseImage);
             if (exerciseName.equalsIgnoreCase("Jumping Jacks")) {
                 Toast.makeText(this, "Bewegungssensor aktiv! Handy in der Hand halten.", Toast.LENGTH_LONG).show();
                 isJumpingJackActive = true;
