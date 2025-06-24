@@ -60,10 +60,17 @@ public class DeineWorkouts extends AppCompatActivity {
         // Löschen beim Long-Click
         adapter.setOnItemLongClickListener(position -> {
             WorkoutSession workoutToDelete = workoutsFromDb.get(position);
-            new Thread(() -> {
-                db.userDao().deleteWorkout(workoutToDelete);
-                runOnUiThread(this::loadWorkoutsFromDb);
-            }).start();
+            new android.app.AlertDialog.Builder(this)
+                .setTitle("Workout wirklich löschen?")
+                .setMessage("Möchtest du dieses Workout wirklich löschen?")
+                .setPositiveButton("Ja", (dialog, which) -> {
+                    new Thread(() -> {
+                        db.userDao().deleteWorkout(workoutToDelete);
+                        runOnUiThread(this::loadWorkoutsFromDb);
+                    }).start();
+                })
+                .setNegativeButton("Nein", null)
+                .show();
         });
 
         TextView emptyWorkoutsText = findViewById(R.id.emptyWorkoutsText);
