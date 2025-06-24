@@ -10,22 +10,23 @@
         android:id="@+id/progressTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         android:text="Fortschritte &amp; Historie"
         android:textSize="24sp"
         android:textStyle="bold"
-        android:layout_marginTop="16dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/weeklyTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
         android:text="Letzte 7 Tage"
         android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
-        tools:layout_editor_absoluteY="160dp" />
+        app:layout_constraintTop_toBottomOf="@id/progressTitle" />
 
     <com.github.mikephil.charting.charts.LineChart
         android:id="@+id/weeklyChart"
@@ -45,23 +46,23 @@
         android:id="@+id/weeklyEmptyText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:text="Keine abgeschlossenen Workouts"
         android:textAlignment="center"
-        android:visibility="gone"
         android:textColor="@android:color/darker_gray"
-        android:layout_marginTop="8dp"
+        android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@id/weeklyRecyclerView" />
 
     <TextView
         android:id="@+id/monthlyTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
         android:text="Letzter Monat"
         android:textSize="20sp"
         android:textStyle="bold"
-        android:layout_marginTop="32dp"
-        app:layout_constraintTop_toBottomOf="@id/weeklyRecyclerView"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/weeklyRecyclerView" />
 
     <com.github.mikephil.charting.charts.LineChart
         android:id="@+id/monthlyChart"
@@ -81,11 +82,11 @@
         android:id="@+id/monthlyEmptyText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:text="Keine abgeschlossenen Workouts"
         android:textAlignment="center"
-        android:visibility="gone"
         android:textColor="@android:color/darker_gray"
-        android:layout_marginTop="8dp"
+        android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@id/monthlyRecyclerView" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
