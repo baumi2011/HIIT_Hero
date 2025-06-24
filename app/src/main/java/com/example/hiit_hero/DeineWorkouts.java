@@ -21,8 +21,9 @@ import android.widget.Toast;
 import android.widget.TextView;
 
 public class DeineWorkouts extends AppCompatActivity {
-    public static List<WorkoutSession> eigeneWorkouts = new ArrayList<>();
     private WorkoutAdapter adapter;
+    private Datenbank.DatenbaseApp db;
+    private List<WorkoutSession> workoutsFromDb = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,18 +36,22 @@ public class DeineWorkouts extends AppCompatActivity {
             return insets;
         });
 
+        db = Datenbank.DatenbaseApp.getDatabase(getApplicationContext());
         RecyclerView recyclerView = findViewById(R.id.workoutsRecyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy", java.util.Locale.GERMAN);
-        adapter = new WorkoutAdapter(eigeneWorkouts, dateFormat);
+        adapter = new WorkoutAdapter(workoutsFromDb, dateFormat);
         recyclerView.setAdapter(adapter);
+
+        // Workouts aus Room laden
+        loadWorkoutsFromDb();
 
         // Detailansicht beim Klick
         adapter.setOnItemClickListener(workout -> {
             Intent intent = new Intent(this, WorkoutAnsicht.class);
             intent.putExtra("workoutName", workout.getName());
             intent.putExtra("workoutDuration", workout.getDuration());
-            intent.putExtra("workoutDate", dateFormat.format(workout.getDate()));
+            intent.putExtra("workoutDate", dateFormat.format(new java.util.Date(workout.getDate())));
             intent.putExtra("workoutCalories", workout.getCaloriesBurned());
             intent.putExtra("workoutExercises", workout.getExercisesAsString());
             startActivity(intent);
@@ -54,20 +59,15 @@ public class DeineWorkouts extends AppCompatActivity {
 
         // Löschen beim Long-Click
         adapter.setOnItemLongClickListener(position -> {
-            new AlertDialog.Builder(DeineWorkouts.this)
-                    .setTitle("Workout löschen")
-                    .setMessage("Möchtest du dieses Workout wirklich löschen?")
-                    .setPositiveButton("Löschen", (dialog, which) -> {
-                        eigeneWorkouts.remove(position);
-                        adapter.notifyDataSetChanged();
-                        Toast.makeText(DeineWorkouts.this, "Workout gelöscht", Toast.LENGTH_SHORT).show();
-                    })
-                    .setNegativeButton("Abbrechen", null)
-                    .show();
+            WorkoutSession workoutToDelete = workoutsFromDb.get(position);
+            new Thread(() -> {
+                db.userDao().deleteWorkout(workoutToDelete);
+                runOnUiThread(this::loadWorkoutsFromDb);
+            }).start();
         });
 
         TextView emptyWorkoutsText = findViewById(R.id.emptyWorkoutsText);
-        if (eigeneWorkouts.isEmpty()) {
+        if (workoutsFromDb.isEmpty()) {
             recyclerView.setVisibility(View.GONE);
             emptyWorkoutsText.setVisibility(View.VISIBLE);
         } else {
@@ -76,20 +76,29 @@ public class DeineWorkouts extends AppCompatActivity {
         }
     }
 
+    private void loadWorkoutsFromDb() {
+        new Thread(() -> {
+            List<WorkoutSession> loaded = db.userDao().getAllWorkouts();
+            runOnUiThread(() -> {
+                workoutsFromDb.clear();
+                workoutsFromDb.addAll(loaded);
+                adapter.notifyDataSetChanged();
+                TextView emptyWorkoutsText = findViewById(R.id.emptyWorkoutsText);
+                RecyclerView recyclerView = findViewById(R.id.workoutsRecyclerView);
+                if (workoutsFromDb.isEmpty()) {
+                    recyclerView.setVisibility(View.GONE);
+                    emptyWorkoutsText.setVisibility(View.VISIBLE);
+                } else {
+                    recyclerView.setVisibility(View.VISIBLE);
+                    emptyWorkoutsText.setVisibility(View.GONE);
+                }
+            });
+        }).start();
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
-        if (adapter != null) {
-            adapter.notifyDataSetChanged();
-        }
-        TextView emptyWorkoutsText = findViewById(R.id.emptyWorkoutsText);
-        RecyclerView recyclerView = findViewById(R.id.workoutsRecyclerView);
-        if (eigeneWorkouts.isEmpty()) {
-            recyclerView.setVisibility(View.GONE);
-            emptyWorkoutsText.setVisibility(View.VISIBLE);
-        } else {
-            recyclerView.setVisibility(View.VISIBLE);
-            emptyWorkoutsText.setVisibility(View.GONE);
-        }
+        loadWorkoutsFromDb();
     }
 }

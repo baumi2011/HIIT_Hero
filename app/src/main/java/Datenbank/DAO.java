@@ -5,6 +5,7 @@ import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Update;
+import androidx.room.Delete;
 
 import java.util.List;
 
@@ -22,5 +23,17 @@ public interface DAO {
 
     @Update
     void update(User user);
+
+    @Query("SELECT * FROM workouts")
+    List<com.example.hiit_hero.WorkoutSession> getAllWorkouts();
+
+    @Insert
+    void insertWorkout(com.example.hiit_hero.WorkoutSession workout);
+
+    @Delete
+    void deleteWorkout(com.example.hiit_hero.WorkoutSession workout);
+
+    @Update
+    void updateWorkout(com.example.hiit_hero.WorkoutSession workout);
 
 }

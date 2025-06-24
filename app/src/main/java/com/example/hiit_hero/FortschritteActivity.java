@@ -37,41 +37,46 @@ public class FortschritteActivity extends AppCompatActivity {
         weeklyRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         monthlyRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        // Workouts aus DeineWorkouts holen
-        List<WorkoutSession> allWorkouts = DeineWorkouts.eigeneWorkouts;
-        List<WorkoutSession> weeklyWorkouts = new ArrayList<>();
-        List<WorkoutSession> monthlyWorkouts = new ArrayList<>();
-        Date now = new Date();
-        long millisInDay = 24 * 60 * 60 * 1000L;
+        // Workouts aus Room holen
+        Datenbank.DatenbaseApp db = Datenbank.DatenbaseApp.getDatabase(getApplicationContext());
+        new Thread(() -> {
+            List<WorkoutSession> allWorkouts = db.userDao().getAllWorkouts();
+            List<WorkoutSession> weeklyWorkouts = new ArrayList<>();
+            List<WorkoutSession> monthlyWorkouts = new ArrayList<>();
+            Date now = new Date();
+            long millisInDay = 24 * 60 * 60 * 1000L;
 
-        for (WorkoutSession ws : allWorkouts) {
-            long diff = now.getTime() - ws.getDate().getTime();
-            if (diff <= 7 * millisInDay) {
-                weeklyWorkouts.add(ws);
-            } else if (diff <= 31 * millisInDay) {
-                monthlyWorkouts.add(ws);
+            for (WorkoutSession ws : allWorkouts) {
+                long diff = now.getTime() - ws.getDate();
+                if (diff <= 7 * millisInDay) {
+                    weeklyWorkouts.add(ws);
+                } else if (diff <= 31 * millisInDay) {
+                    monthlyWorkouts.add(ws);
+                }
             }
-        }
 
-        // Anzeige-Logik
-        if (!weeklyWorkouts.isEmpty()) {
-            weeklyRecyclerView.setVisibility(View.VISIBLE);
-            weeklyEmptyText.setVisibility(View.GONE);
-            WorkoutAdapter weeklyAdapter = new WorkoutAdapter(weeklyWorkouts, dateFormat);
-            weeklyRecyclerView.setAdapter(weeklyAdapter);
-        } else {
-            weeklyRecyclerView.setVisibility(View.GONE);
-            weeklyEmptyText.setVisibility(View.VISIBLE);
-        }
+            runOnUiThread(() -> {
+                // Anzeige-Logik
+                if (!weeklyWorkouts.isEmpty()) {
+                    weeklyRecyclerView.setVisibility(View.VISIBLE);
+                    weeklyEmptyText.setVisibility(View.GONE);
+                    WorkoutAdapter weeklyAdapter = new WorkoutAdapter(weeklyWorkouts, dateFormat);
+                    weeklyRecyclerView.setAdapter(weeklyAdapter);
+                } else {
+                    weeklyRecyclerView.setVisibility(View.GONE);
+                    weeklyEmptyText.setVisibility(View.VISIBLE);
+                }
 
-        if (weeklyWorkouts.isEmpty() && !monthlyWorkouts.isEmpty()) {
-            monthlyRecyclerView.setVisibility(View.VISIBLE);
-            monthlyEmptyText.setVisibility(View.GONE);
-            WorkoutAdapter monthlyAdapter = new WorkoutAdapter(monthlyWorkouts, dateFormat);
-            monthlyRecyclerView.setAdapter(monthlyAdapter);
-        } else {
-            monthlyRecyclerView.setVisibility(View.GONE);
-            monthlyEmptyText.setVisibility(View.VISIBLE);
-        }
+                if (weeklyWorkouts.isEmpty() && !monthlyWorkouts.isEmpty()) {
+                    monthlyRecyclerView.setVisibility(View.VISIBLE);
+                    monthlyEmptyText.setVisibility(View.GONE);
+                    WorkoutAdapter monthlyAdapter = new WorkoutAdapter(monthlyWorkouts, dateFormat);
+                    monthlyRecyclerView.setAdapter(monthlyAdapter);
+                } else {
+                    monthlyRecyclerView.setVisibility(View.GONE);
+                    monthlyEmptyText.setVisibility(View.VISIBLE);
+                }
+            });
+        });
     }
 }

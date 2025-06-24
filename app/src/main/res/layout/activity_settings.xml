@@ -71,30 +71,7 @@
                 android:layout_marginTop="8dp"
                 android:text="Anonyme Nutzungsdaten sammeln" />
 
-            <!-- Backup &amp; Wiederherstellung -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:text="Backup &amp; Wiederherstellung"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
-            <Button
-                android:id="@+id/backupButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="Daten sichern" />
-
-            <Button
-                android:id="@+id/restoreButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="Daten wiederherstellen" />
-
-            <!-- App-Informationen -->
+            <!-- App-Informationen (direkt nach Datenschutz, ohne Backup-Bereich) -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

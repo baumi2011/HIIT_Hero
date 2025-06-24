@@ -100,16 +100,17 @@ public class WorkoutErstellen extends AppCompatActivity {
                 return;
             }
 
-            WorkoutSession workout = new WorkoutSession(name, duration + " Minuten", new Date(), calories);
-            String[] selectedExercises = exercisesStr.split(", ");
-            for (String ex : selectedExercises) {
-                workout.addExercise(ex);
-            }
-            DeineWorkouts.eigeneWorkouts.add(workout);
-            Toast.makeText(this, "Workout gespeichert!", Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(this, DeineWorkouts.class);
-            startActivity(intent);
-            finish();
+            WorkoutSession workout = new WorkoutSession(name, duration + " Minuten", new java.util.Date().getTime(), calories, exercisesStr);
+            new Thread(() -> {
+                Datenbank.DatenbaseApp db = Datenbank.DatenbaseApp.getDatabase(getApplicationContext());
+                db.userDao().insertWorkout(workout);
+                runOnUiThread(() -> {
+                    Toast.makeText(this, "Workout gespeichert!", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(this, DeineWorkouts.class);
+                    startActivity(intent);
+                    finish();
+                });
+            }).start();
         });
     }
 }

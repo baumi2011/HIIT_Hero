@@ -11,6 +11,7 @@ import com.google.android.material.textfield.TextInputEditText;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Calendar;
+import java.util.Arrays;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -60,12 +61,10 @@ public class VordefinierteWorkouts extends AppCompatActivity {
         WorkoutSession cardioWorkout = new WorkoutSession(
             "HIIT Cardio",
             "30 Minuten",
-            calendar.getTime(),
-            300
+            calendar.getTimeInMillis(),
+            300,
+            "Burpees, Mountain Climbers, Jumping Jacks"
         );
-        cardioWorkout.addExercise("Burpees");
-        cardioWorkout.addExercise("Mountain Climbers");
-        cardioWorkout.addExercise("Jumping Jacks");
         workouts.add(cardioWorkout);
 
         // Beispiel 2: HIIT Strength
@@ -73,12 +72,10 @@ public class VordefinierteWorkouts extends AppCompatActivity {
         WorkoutSession strengthWorkout = new WorkoutSession(
             "HIIT Strength",
             "45 Minuten",
-            calendar.getTime(),
-            400
+            calendar.getTimeInMillis(),
+            400,
+            "Liegestütze, Kniebeugen, Plank"
         );
-        strengthWorkout.addExercise("Liegestütze");
-        strengthWorkout.addExercise("Kniebeugen");
-        strengthWorkout.addExercise("Plank");
         workouts.add(strengthWorkout);
 
         // Beispiel 3: HIIT Full Body
@@ -86,13 +83,10 @@ public class VordefinierteWorkouts extends AppCompatActivity {
         WorkoutSession fullBodyWorkout = new WorkoutSession(
             "HIIT Full Body",
             "40 Minuten",
-            calendar.getTime(),
-            350
+            calendar.getTimeInMillis(),
+            350,
+            "Burpees, Kniebeugen, Mountain Climbers, Plank"
         );
-        fullBodyWorkout.addExercise("Burpees");
-        fullBodyWorkout.addExercise("Kniebeugen");
-        fullBodyWorkout.addExercise("Mountain Climbers");
-        fullBodyWorkout.addExercise("Plank");
         workouts.add(fullBodyWorkout);
 
         adapter = new WorkoutAdapter(workouts, new java.text.SimpleDateFormat("dd.MM.yyyy", java.util.Locale.GERMAN));
@@ -143,7 +137,7 @@ public class VordefinierteWorkouts extends AppCompatActivity {
             if (!selectedWorkout.isEmpty()) {
                 for (WorkoutSession workout : workouts) {
                     if (workout.getName().equals(selectedWorkout)) {
-                        List<String> exercises = workout.getExercises();
+                        java.util.List<String> exercises = Arrays.asList(workout.getExercisesList());
                         if (!exercises.isEmpty()) {
                             intent.putExtra("EXERCISE_NAME", exercises.get(0));
                             intent.putStringArrayListExtra("exercises", new ArrayList<>(exercises));

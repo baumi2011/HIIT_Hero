@@ -1,49 +1,49 @@
 package com.example.hiit_hero;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import androidx.room.Entity;
+import androidx.room.Ignore;
+import androidx.room.PrimaryKey;
+import androidx.room.ColumnInfo;
+import androidx.room.Ignore;
+@Entity(tableName = "workouts")
 
 public class WorkoutSession {
-    private String name;
-    private String duration;
-    private Date date;
-    private int caloriesBurned;
-    private List<String> exercises;
+    @PrimaryKey(autoGenerate = true)
+    public int id;
 
-    public WorkoutSession(String name, String duration, Date date, int caloriesBurned) {
+    @ColumnInfo(name = "name")
+    public String name;
+
+    @ColumnInfo(name = "duration")
+    public String duration;
+
+    @ColumnInfo(name = "date")
+    public long date; // Timestamp
+
+    @ColumnInfo(name = "caloriesBurned")
+    public int caloriesBurned;
+
+    @ColumnInfo(name = "exercises")
+    public String exercises; // Komma-separiert
+
+    @Ignore
+    public WorkoutSession(String name, String duration, long date, int caloriesBurned, String exercises) {
         this.name = name;
         this.duration = duration;
         this.date = date;
         this.caloriesBurned = caloriesBurned;
-        this.exercises = new ArrayList<>();
+        this.exercises = exercises;
     }
 
-    public String getName() {
-        return name;
-    }
+    // Leerer Konstruktor für Room
+    public WorkoutSession() {}
 
-    public String getDuration() {
-        return duration;
-    }
-
-    public Date getDate() {
-        return date;
-    }
-
-    public int getCaloriesBurned() {
-        return caloriesBurned;
-    }
-
-    public List<String> getExercises() {
-        return exercises;
-    }
-
-    public void addExercise(String exercise) {
-        exercises.add(exercise);
-    }
-
-    public String getExercisesAsString() {
-        return String.join(", ", exercises);
+    public String getName() { return name; }
+    public String getDuration() { return duration; }
+    public long getDate() { return date; }
+    public int getCaloriesBurned() { return caloriesBurned; }
+    public String getExercisesAsString() { return exercises; }
+    public String[] getExercisesList() {
+        return exercises != null ? exercises.split(", ") : new String[0];
     }
 }
