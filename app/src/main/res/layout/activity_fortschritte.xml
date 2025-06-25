@@ -21,12 +21,11 @@
         android:id="@+id/weeklyTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
         android:text="Letzte 7 Tage"
         android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/progressTitle" />
+        tools:layout_editor_absoluteY="160dp" />
 
     <com.github.mikephil.charting.charts.LineChart
         android:id="@+id/weeklyChart"
