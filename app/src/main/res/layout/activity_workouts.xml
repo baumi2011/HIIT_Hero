@@ -56,4 +56,16 @@
         app:layout_constraintTop_toBottomOf="@id/createWorkoutButton"
         app:layout_constraintWidth_percent="0.7" />
 
+    <Button
+        android:id="@+id/uebungenButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:padding="16dp"
+        android:text="Übungen"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/yourWorkoutsButton"
+        app:layout_constraintWidth_percent="0.7" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -21,6 +21,52 @@
         tools:text="Liegestütze" />
 
     <TextView
+        android:id="@+id/caloriesLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Kalorien pro Minute:"
+        android:textStyle="bold"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/difficultyLabel" />
+
+    <TextView
+        android:id="@+id/caloriesValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        app:layout_constraintLeft_toRightOf="@id/caloriesLabel"
+        app:layout_constraintTop_toTopOf="@id/caloriesLabel"
+        tools:text="8-10 kcal" />
+
+    <ImageView
+        android:id="@+id/exerciseImage"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_marginTop="24dp"
+        android:scaleType="centerCrop"
+        app:layout_constraintTop_toBottomOf="@id/caloriesValue"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:src="@drawable/ic_launcher_foreground"
+        tools:ignore="ContentDescription" />
+
+    <TextView
+        android:id="@+id/jumpingJackHint"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="\u26A0\uFE0F  Für diese Übung wird der Bewegungssensor verwendet! Halte das Handy in der Hand."
+        android:textColor="@android:color/white"
+        android:textStyle="bold"
+        android:visibility="gone"
+        android:textSize="16sp"
+        android:gravity="center"
+        app:layout_constraintTop_toBottomOf="@id/exerciseImage"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <TextView
         android:id="@+id/descriptionLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -74,24 +120,5 @@
         app:layout_constraintLeft_toRightOf="@id/difficultyLabel"
         app:layout_constraintTop_toTopOf="@id/difficultyLabel"
         tools:text="Mittel" />
-
-    <TextView
-        android:id="@+id/caloriesLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="Kalorien pro Minute:"
-        android:textStyle="bold"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/difficultyLabel" />
-
-    <TextView
-        android:id="@+id/caloriesValue"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        app:layout_constraintLeft_toRightOf="@id/caloriesLabel"
-        app:layout_constraintTop_toTopOf="@id/caloriesLabel"
-        tools:text="8-10 kcal" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

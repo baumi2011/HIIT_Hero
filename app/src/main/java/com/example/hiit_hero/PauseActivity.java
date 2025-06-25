@@ -12,6 +12,9 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import java.util.ArrayList;
 import android.app.AlertDialog;
+import android.widget.ImageView;
+import com.bumptech.glide.Glide;
+import android.view.View;
 
 public class PauseActivity extends AppCompatActivity {
     private TextView pauseTimer;
@@ -78,18 +81,36 @@ public class PauseActivity extends AppCompatActivity {
     private void updateNextExercise() {
         if (exercises != null && currentExerciseIndex + 1 < exercises.size()) {
             String nextExercise = exercises.get(currentExerciseIndex + 1);
+            ImageView nextExerciseImage = findViewById(R.id.nextExerciseImage);
+            TextView jumpingJackHint = findViewById(R.id.jumpingJackHint);
+            jumpingJackHint.setVisibility(View.GONE);
+            int imageRes = R.drawable.ic_launcher_foreground;
+            switch (nextExercise) {
+                case "Liegestütze":
+                    imageRes = R.drawable.pushups;
+                    break;
+                case "Plank":
+                    imageRes = R.drawable.plank;
+                    break;
+                case "Jumping Jacks":
+                    imageRes = R.drawable.jumpingjacks;
+                    jumpingJackHint.setVisibility(View.VISIBLE);
+                    break;
+                case "Burpees":
+                    imageRes = R.drawable.burpees;
+                    break;
+                case "Kniebeugen":
+                    imageRes = R.drawable.kniebeugen;
+                    break;
+                case "Mountain Climbers":
+                    imageRes = R.drawable.mountainclimbers;
+                    break;
+            }
+            Glide.with(this).asGif().load(imageRes).into(nextExerciseImage);
             if (currentExerciseIndex + 2 >= exercises.size()) {
                 nextExerciseText.setText("Letzte Übung: " + nextExercise);
             } else {
                 nextExerciseText.setText("Nächste Übung: " + nextExercise);
-            }
-            // Hinweis für Jumping Jacks
-            if (nextExercise.equalsIgnoreCase("Jumping Jacks")) {
-                new AlertDialog.Builder(this)
-                        .setTitle("Achtung")
-                        .setMessage("Die nächste Übung nutzt den Bewegungssensor! Halte das Handy in der Hand.")
-                        .setPositiveButton("OK", null)
-                        .show();
             }
         } else {
             nextExerciseText.setText("Workout beenden");

@@ -5,6 +5,17 @@ import android.os.Bundle;
 import android.widget.Button;
 import android.widget.Switch;
 import android.widget.Toast;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.app.TimePickerDialog;
+import android.content.Context;
+import android.content.Intent;
+import android.os.Build;
+import androidx.core.app.NotificationCompat;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import java.util.Calendar;
+import android.util.Log;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AlertDialog;
@@ -12,6 +23,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import android.widget.TextView;
 
 public class SettingsActivity extends AppCompatActivity {
     private SharedPreferences sharedPreferences;
@@ -39,6 +51,29 @@ public class SettingsActivity extends AppCompatActivity {
         initializeViews();
         loadSettings();
         setupListeners();
+
+        Button setReminderTimeButton = findViewById(R.id.setReminderTimeButton);
+        TextView reminderTimeText = findViewById(R.id.reminderTimeText);
+
+        // Lade gespeicherte Zeit
+        int hour = sharedPreferences.getInt("reminder_hour", 18);
+        int minute = sharedPreferences.getInt("reminder_minute", 0);
+        updateReminderTimeText(reminderTimeText, hour, minute);
+
+        setReminderTimeButton.setOnClickListener(v -> {
+            Calendar now = Calendar.getInstance();
+            TimePickerDialog timePicker = new TimePickerDialog(this, (view, hourOfDay, minute1) -> {
+                sharedPreferences.edit()
+                    .putInt("reminder_hour", hourOfDay)
+                    .putInt("reminder_minute", minute1)
+                    .apply();
+                updateReminderTimeText(reminderTimeText, hourOfDay, minute1);
+                if (notificationsSwitch.isChecked()) {
+                    setDailyReminder(hourOfDay, minute1);
+                }
+            }, hour, minute, true);
+            timePicker.show();
+        });
     }
 
     private void initializeViews() {
@@ -62,24 +97,24 @@ public class SettingsActivity extends AppCompatActivity {
         notificationsSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             sharedPreferences.edit().putBoolean("notifications_enabled", isChecked).apply();
             if (isChecked) {
-                // TODO: Implement notification scheduling
+                int hour = sharedPreferences.getInt("reminder_hour", 18);
+                int minute = sharedPreferences.getInt("reminder_minute", 0);
+                setDailyReminder(hour, minute);
                 Toast.makeText(this, "Benachrichtigungen aktiviert", Toast.LENGTH_SHORT).show();
             } else {
-                // TODO: Cancel scheduled notifications
+                cancelDailyReminder();
                 Toast.makeText(this, "Benachrichtigungen deaktiviert", Toast.LENGTH_SHORT).show();
             }
         });
 
         achievementsSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             sharedPreferences.edit().putBoolean("achievements_enabled", isChecked).apply();
-            Toast.makeText(this, isChecked ? "Erfolgsbenachrichtigungen aktiviert" : "Erfolgsbenachrichtigungen deaktiviert", 
-                    Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, isChecked ? "Erfolge & Fortschritte aktiviert" : "Erfolge & Fortschritte deaktiviert", Toast.LENGTH_SHORT).show();
         });
 
         dataCollectionSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             sharedPreferences.edit().putBoolean("data_collection_enabled", isChecked).apply();
-            Toast.makeText(this, isChecked ? "Datensammlung aktiviert" : "Datensammlung deaktiviert", 
-                    Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, isChecked ? "Datensammlung aktiviert" : "Datensammlung deaktiviert", Toast.LENGTH_SHORT).show();
         });
 
         findViewById(R.id.aboutButton).setOnClickListener(v -> {
@@ -105,5 +140,54 @@ public class SettingsActivity extends AppCompatActivity {
                 .setPositiveButton("OK", null)
                 .show();
         });
+    }
+
+    private void updateReminderTimeText(TextView textView, int hour, int minute) {
+        textView.setText(String.format("Erinnerungszeit: %02d:%02d", hour, minute));
+    }
+
+    private void setDailyReminder(int hour, int minute) {
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(this, ReminderReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, hour);
+        calendar.set(Calendar.MINUTE, minute);
+        calendar.set(Calendar.SECOND, 0);
+        if (calendar.getTimeInMillis() < System.currentTimeMillis()) {
+            calendar.add(Calendar.DAY_OF_YEAR, 1);
+        }
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        if (intent != null && "HIIT_HERO_REMINDER".equals(intent.getAction())) {
+            showTrainingNotification();
+        }
+    }
+
+    private void showTrainingNotification() {
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        String channelId = "reminder_channel";
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel(channelId, "Trainingserinnerung", NotificationManager.IMPORTANCE_HIGH);
+            notificationManager.createNotificationChannel(channel);
+        }
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, channelId)
+                .setSmallIcon(R.drawable.ic_launcher_foreground)
+                .setContentTitle("HIIT Hero")
+                .setContentText("Zeit für dein Training!")
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setAutoCancel(true);
+        notificationManager.notify(1, builder.build());
+    }
+
+    private void cancelDailyReminder() {
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(this, ReminderReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+        alarmManager.cancel(pendingIntent);
     }
 } 

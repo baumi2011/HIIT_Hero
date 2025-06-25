@@ -16,6 +16,7 @@ import android.widget.Button;
 import android.widget.Toast;
 import android.content.Intent;
 import java.util.Date;
+import android.content.SharedPreferences;
 
 public class WorkoutErstellen extends AppCompatActivity {
     private EditText exercisesInput;
@@ -82,6 +83,11 @@ public class WorkoutErstellen extends AppCompatActivity {
         });
 
         startWorkoutButton.setOnClickListener(v -> {
+            SharedPreferences prefs = getSharedPreferences("AppSettings", MODE_PRIVATE);
+            if (!prefs.getBoolean("data_collection_enabled", false)) {
+                Toast.makeText(this, "Datenspeicherung deaktiviert! Speichern nicht möglich", Toast.LENGTH_SHORT).show();
+                return;
+            }
             String name = workoutNameInput.getText().toString().trim();
             String duration = timeInput.getText().toString().trim();
             String caloriesStr = caloriesInput.getText().toString().trim();

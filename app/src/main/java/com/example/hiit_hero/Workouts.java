@@ -27,6 +27,7 @@ public class Workouts extends AppCompatActivity {
         Button predefinedWorkoutsButton = findViewById(R.id.predefinedWorkoutsButton);
         Button createWorkoutButton = findViewById(R.id.createWorkoutButton);
         Button yourWorkoutsButton = findViewById(R.id.yourWorkoutsButton);
+        Button uebungenButton = findViewById(R.id.uebungenButton);
 
         predefinedWorkoutsButton.setOnClickListener(v -> {
             Intent intent = new Intent(this, VordefinierteWorkouts.class);
@@ -40,6 +41,11 @@ public class Workouts extends AppCompatActivity {
 
         yourWorkoutsButton.setOnClickListener(v -> {
             Intent intent = new Intent(this, DeineWorkouts.class);
+            startActivity(intent);
+        });
+
+        uebungenButton.setOnClickListener(v -> {
+            Intent intent = new Intent(this, Uebungen.class);
             startActivity(intent);
         });
     }
