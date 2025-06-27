@@ -4,6 +4,9 @@
 
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"/>
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
         android:allowBackup="true"
@@ -72,7 +75,16 @@
         <activity
             android:name=".Uebungen"
             android:exported="false" />
+        <activity
+            android:name=".RunningActivity"
+            android:exported="false" />
         <receiver android:name=".ReminderReceiver" android:exported="false"/>
+        <service
+            android:name=".LocationService"
+            android:foregroundServiceType="location" />
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="YOUR_API_KEY" />
     </application>
 
 </manifest>

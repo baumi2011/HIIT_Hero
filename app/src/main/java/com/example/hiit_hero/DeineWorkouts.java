@@ -14,10 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.text.SimpleDateFormat;
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.view.View;
-import android.widget.Toast;
 import android.widget.TextView;
 
 public class DeineWorkouts extends AppCompatActivity {
@@ -40,7 +38,7 @@ public class DeineWorkouts extends AppCompatActivity {
         RecyclerView recyclerView = findViewById(R.id.workoutsRecyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy", java.util.Locale.GERMAN);
-        adapter = new WorkoutAdapter(workoutsFromDb, dateFormat);
+        adapter = new WorkoutAdapter(workoutsFromDb, dateFormat, true);
         recyclerView.setAdapter(adapter);
 
         // Workouts aus Room laden
@@ -57,23 +55,31 @@ public class DeineWorkouts extends AppCompatActivity {
             startActivity(intent);
         });
 
-        // Löschen beim Long-Click
-        adapter.setOnItemLongClickListener(position -> {
-            WorkoutSession workoutToDelete = workoutsFromDb.get(position);
-            new android.app.AlertDialog.Builder(this)
-                .setTitle("Workout wirklich löschen?")
-                .setMessage("Möchtest du dieses Workout wirklich löschen?")
-                .setPositiveButton("Ja", (dialog, which) -> {
-                    new Thread(() -> {
-                        db.userDao().deleteWorkout(workoutToDelete);
-                        runOnUiThread(this::loadWorkoutsFromDb);
-                    }).start();
-                })
-                .setNegativeButton("Nein", null)
-                .show();
+        // Löschen beim Klick auf den Lösch-Button
+        adapter.setOnDeleteClickListener(workout -> {
+            new AlertDialog.Builder(this)
+                    .setTitle("Workout löschen")
+                    .setMessage("Möchtest du dieses Workout wirklich löschen?")
+                    .setPositiveButton("Ja", (dialog, which) -> {
+                        new Thread(() -> {
+                            db.userDao().deleteWorkout(workout);
+                            runOnUiThread(() -> {
+                                adapter.removeWorkout(workout);
+                                updateEmptyState();
+                            });
+                        }).start();
+                    })
+                    .setNegativeButton("Nein", null)
+                    .show();
         });
 
         TextView emptyWorkoutsText = findViewById(R.id.emptyWorkoutsText);
+        updateEmptyState();
+    }
+
+    private void updateEmptyState() {
+        TextView emptyWorkoutsText = findViewById(R.id.emptyWorkoutsText);
+        RecyclerView recyclerView = findViewById(R.id.workoutsRecyclerView);
         if (workoutsFromDb.isEmpty()) {
             recyclerView.setVisibility(View.GONE);
             emptyWorkoutsText.setVisibility(View.VISIBLE);
@@ -90,15 +96,7 @@ public class DeineWorkouts extends AppCompatActivity {
                 workoutsFromDb.clear();
                 workoutsFromDb.addAll(loaded);
                 adapter.notifyDataSetChanged();
-                TextView emptyWorkoutsText = findViewById(R.id.emptyWorkoutsText);
-                RecyclerView recyclerView = findViewById(R.id.workoutsRecyclerView);
-                if (workoutsFromDb.isEmpty()) {
-                    recyclerView.setVisibility(View.GONE);
-                    emptyWorkoutsText.setVisibility(View.VISIBLE);
-                } else {
-                    recyclerView.setVisibility(View.VISIBLE);
-                    emptyWorkoutsText.setVisibility(View.GONE);
-                }
+                updateEmptyState();
             });
         }).start();
     }

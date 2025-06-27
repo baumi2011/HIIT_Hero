@@ -4,10 +4,12 @@ import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 import androidx.room.ColumnInfo;
-import androidx.room.Ignore;
 @Entity(tableName = "workouts")
 
+
+
 public class WorkoutSession {
+
     @PrimaryKey(autoGenerate = true)
     public int id;
 
@@ -26,6 +28,12 @@ public class WorkoutSession {
     @ColumnInfo(name = "exercises")
     public String exercises; // Komma-separiert
 
+    @ColumnInfo(name = "distance_km")
+    public float distanceKm;
+
+    @ColumnInfo(name = "avg_speed_kmh")
+    public float avgSpeedKmh;
+
     @Ignore
     public WorkoutSession(String name, String duration, long date, int caloriesBurned, String exercises) {
         this.name = name;
@@ -33,6 +41,17 @@ public class WorkoutSession {
         this.date = date;
         this.caloriesBurned = caloriesBurned;
         this.exercises = exercises;
+    }
+
+    @Ignore
+    public WorkoutSession(String name, String duration, long date, int caloriesBurned, float distanceKm, float avgSpeedKmh) {
+        this.name = name;
+        this.duration = duration;
+        this.date = date;
+        this.caloriesBurned = caloriesBurned;
+        this.distanceKm = distanceKm;
+        this.avgSpeedKmh = avgSpeedKmh;
+        this.exercises = "Laufen"; // Set exercise type
     }
 
     // Leerer Konstruktor für Room
@@ -46,4 +65,8 @@ public class WorkoutSession {
     public String[] getExercisesList() {
         return exercises != null ? exercises.split(", ") : new String[0];
     }
+    public float getDistanceKm() { return distanceKm; }
+    public float getAvgSpeedKmh() { return avgSpeedKmh; }
+
+
 }

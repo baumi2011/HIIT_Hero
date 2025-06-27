@@ -11,9 +11,10 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import android.view.View;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -44,6 +45,10 @@ public class Exercise extends AppCompatActivity implements SensorEventListener {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_exercise);
+
+        View mainView = findViewById(R.id.main);
+        mainView.setBackgroundColor(ContextCompat.getColor(this, R.color.exercise_background));
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -207,17 +212,21 @@ public class Exercise extends AppCompatActivity implements SensorEventListener {
     }
 
     private void navigateToPause() {
+        // Hole die Workout-Werte aus dem Intent
+        String workoutName = getIntent().getStringExtra("workoutName");
+        String duration = getIntent().getStringExtra("workoutDuration");
+        int calories = getIntent().getIntExtra("workoutCalories", 0);
+        String exercisesString = String.join(", ", exercises);
+
         if (exercises != null && currentExerciseIndex + 1 >= exercises.size()) {
             // Wenn es die letzte Übung war, navigiere direkt zur WorkoutFertigActivity
             Intent intent = new Intent(this, WorkoutFertigActivity.class);
-            
-            // Hole die Workout-Werte aus dem Intent
-            String duration = getIntent().getStringExtra("workoutDuration");
-            int calories = getIntent().getIntExtra("workoutCalories", 0);
-            
+
             // Übergebe die Workout-Werte
+            intent.putExtra("workoutName", workoutName);
             intent.putExtra("workoutDuration", duration);
             intent.putExtra("workoutCalories", calories);
+            intent.putExtra("workoutExercises", exercisesString);
             
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -229,10 +238,9 @@ public class Exercise extends AppCompatActivity implements SensorEventListener {
             Intent intent = new Intent(this, PauseActivity.class);
             intent.putStringArrayListExtra("exercises", exercises);
             intent.putExtra("currentExerciseIndex", currentExerciseIndex);
-            
+
             // Übergebe die Workout-Werte weiter
-            String duration = getIntent().getStringExtra("workoutDuration");
-            int calories = getIntent().getIntExtra("workoutCalories", 0);
+            intent.putExtra("workoutName", workoutName);
             intent.putExtra("workoutDuration", duration);
             intent.putExtra("workoutCalories", calories);
             

@@ -15,8 +15,6 @@ import androidx.core.app.NotificationCompat;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import java.util.Calendar;
-import android.util.Log;
-
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -64,9 +62,9 @@ public class SettingsActivity extends AppCompatActivity {
             Calendar now = Calendar.getInstance();
             TimePickerDialog timePicker = new TimePickerDialog(this, (view, hourOfDay, minute1) -> {
                 sharedPreferences.edit()
-                    .putInt("reminder_hour", hourOfDay)
-                    .putInt("reminder_minute", minute1)
-                    .apply();
+                        .putInt("reminder_hour", hourOfDay)
+                        .putInt("reminder_minute", minute1)
+                        .apply();
                 updateReminderTimeText(reminderTimeText, hourOfDay, minute1);
                 if (notificationsSwitch.isChecked()) {
                     setDailyReminder(hourOfDay, minute1);
@@ -119,26 +117,26 @@ public class SettingsActivity extends AppCompatActivity {
 
         findViewById(R.id.aboutButton).setOnClickListener(v -> {
             new AlertDialog.Builder(this)
-                .setTitle("Über HIIT Hero")
-                .setMessage("HIIT Hero ist deine persönliche Fitness-App für effektives High-Intensity Intervall Training (HIIT). Egal ob Anfänger oder Profi – mit HIIT Hero kannst du individuelle Workouts erstellen, deine Fortschritte verfolgen und dich immer wieder neu motivieren. Unser Ziel ist es, dir ein abwechslungsreiches, motivierendes und gesundes Trainingserlebnis zu bieten. Viel Spaß beim Schwitzen und Erreichen deiner Fitnessziele!")
-                .setPositiveButton("OK", null)
-                .show();
+                    .setTitle("Über HIIT Hero")
+                    .setMessage("HIIT Hero ist deine persönliche Fitness-App für effektives High-Intensity Intervall Training (HIIT). Egal ob Anfänger oder Profi – mit HIIT Hero kannst du individuelle Workouts erstellen, deine Fortschritte verfolgen und dich immer wieder neu motivieren. Unser Ziel ist es, dir ein abwechslungsreiches, motivierendes und gesundes Trainingserlebnis zu bieten. Viel Spaß beim Schwitzen und Erreichen deiner Fitnessziele!")
+                    .setPositiveButton("OK", null)
+                    .show();
         });
 
         findViewById(R.id.privacyPolicyButton).setOnClickListener(v -> {
             new AlertDialog.Builder(this)
-                .setTitle("Datenschutzerklärung")
-                .setMessage("Der Schutz deiner Daten ist uns sehr wichtig. HIIT Hero speichert deine Trainingsdaten ausschließlich lokal auf deinem Gerät. Es werden keine persönlichen Daten an Dritte weitergegeben oder auf externe Server übertragen. Wir verwenden keine Tracker oder Werbenetzwerke. Du hast jederzeit die Kontrolle über deine Daten und kannst sie auf Wunsch löschen. Bei Fragen zum Datenschutz kannst du uns jederzeit kontaktieren.")
-                .setPositiveButton("OK", null)
-                .show();
+                    .setTitle("Datenschutzerklärung")
+                    .setMessage("Der Schutz deiner Daten ist uns sehr wichtig. HIIT Hero speichert deine Trainingsdaten ausschließlich lokal auf deinem Gerät. Es werden keine persönlichen Daten an Dritte weitergegeben oder auf externe Server übertragen. Wir verwenden keine Tracker oder Werbenetzwerke. Du hast jederzeit die Kontrolle über deine Daten und kannst sie auf Wunsch löschen. Bei Fragen zum Datenschutz kannst du uns jederzeit kontaktieren.")
+                    .setPositiveButton("OK", null)
+                    .show();
         });
 
         findViewById(R.id.termsButton).setOnClickListener(v -> {
             new AlertDialog.Builder(this)
-                .setTitle("Nutzungsbedingungen")
-                .setMessage("Mit der Nutzung von HIIT Hero erklärst du dich damit einverstanden, die App ausschließlich für private, nicht-kommerzielle Zwecke zu verwenden. Die bereitgestellten Trainingspläne und Inhalte dienen ausschließlich der Information und Motivation. Die Nutzung erfolgt auf eigene Verantwortung. Bei gesundheitlichen Bedenken konsultiere bitte vor Trainingsbeginn einen Arzt. Wir übernehmen keine Haftung für Verletzungen oder Schäden, die durch die Nutzung der App entstehen.")
-                .setPositiveButton("OK", null)
-                .show();
+                    .setTitle("Nutzungsbedingungen")
+                    .setMessage("Mit der Nutzung von HIIT Hero erklärst du dich damit einverstanden, die App ausschließlich für private, nicht-kommerzielle Zwecke zu verwenden. Die bereitgestellten Trainingspläne und Inhalte dienen ausschließlich der Information und Motivation. Die Nutzung erfolgt auf eigene Verantwortung. Bei gesundheitlichen Bedenken konsultiere bitte vor Trainingsbeginn einen Arzt. Wir übernehmen keine Haftung für Verletzungen oder Schäden, die durch die Nutzung der App entstehen.")
+                    .setPositiveButton("OK", null)
+                    .show();
         });
     }
 
@@ -190,4 +188,4 @@ public class SettingsActivity extends AppCompatActivity {
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
         alarmManager.cancel(pendingIntent);
     }
-} 
+}

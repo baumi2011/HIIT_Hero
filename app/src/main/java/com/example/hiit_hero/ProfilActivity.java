@@ -5,10 +5,8 @@ import android.widget.Button;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.textfield.TextInputEditText;
-
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
 import Datenbank.DAO;
 import Datenbank.DatenbaseApp;
 import Datenbank.User;

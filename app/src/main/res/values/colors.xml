@@ -3,4 +3,6 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="purple_700">#800080</color>
+    <color name="exercise_background">#90EE90</color>
+    <color name="pause_background">#F08080</color>
 </resources>

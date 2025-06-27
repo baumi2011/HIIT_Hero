@@ -11,10 +11,10 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import java.util.ArrayList;
-import android.app.AlertDialog;
 import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 import android.view.View;
+import androidx.core.content.ContextCompat;
 
 public class PauseActivity extends AppCompatActivity {
     private TextView pauseTimer;
@@ -32,6 +32,10 @@ public class PauseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_pause);
+
+        View mainView = findViewById(R.id.main);
+        mainView.setBackgroundColor(ContextCompat.getColor(this, R.color.pause_background));
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -131,15 +135,20 @@ public class PauseActivity extends AppCompatActivity {
                 timeLeftInMillis = 5000; // Reset auf 5 Sekunden
                 updateCountDownText();
                 controlButton.setText("Start");
-                
+                // Hole die Workout-Werte aus dem Intent, um sie weiterzugeben
+                String workoutName = getIntent().getStringExtra("workoutName");
+                String duration = getIntent().getStringExtra("workoutDuration");
+                int calories = getIntent().getIntExtra("workoutCalories", 0);
+                String exercisesString = String.join(", ", exercises);
+
                 // Wenn es die letzte Übung war, navigiere zur WorkoutFertigActivity
                 if (exercises != null && currentExerciseIndex + 1 >= exercises.size()) {
                     Intent intent = new Intent(PauseActivity.this, WorkoutFertigActivity.class);
                     // Übergebe die Workout-Werte
-                    String duration = getIntent().getStringExtra("workoutDuration");
-                    int calories = getIntent().getIntExtra("workoutCalories", 0);
+                    intent.putExtra("workoutName", workoutName);
                     intent.putExtra("workoutDuration", duration);
                     intent.putExtra("workoutCalories", calories);
+                    intent.putExtra("workoutExercises", exercisesString);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intent);
                     finish();
@@ -150,8 +159,7 @@ public class PauseActivity extends AppCompatActivity {
                     intent.putStringArrayListExtra("exercises", exercises);
                     intent.putExtra("currentExerciseIndex", currentExerciseIndex + 1);
                     // Übergebe die Workout-Werte weiter
-                    String duration = getIntent().getStringExtra("workoutDuration");
-                    int calories = getIntent().getIntExtra("workoutCalories", 0);
+                    intent.putExtra("workoutName", workoutName);
                     intent.putExtra("workoutDuration", duration);
                     intent.putExtra("workoutCalories", calories);
                     startActivity(intent);

@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
@@ -16,6 +17,8 @@ public class WorkoutFertigActivity extends AppCompatActivity {
     private TextView caloriesText;
     private TextView durationText;
     private Button saveWorkoutButton;
+    private Button backToMainButton;
+    private boolean workoutSaved = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,10 +36,13 @@ public class WorkoutFertigActivity extends AppCompatActivity {
         caloriesText = findViewById(R.id.caloriesText);
         durationText = findViewById(R.id.durationText);
         saveWorkoutButton = findViewById(R.id.saveWorkoutButton);
+        backToMainButton = findViewById(R.id.backToMainButton);
 
         // Hole die übergebenen Workout-Werte
+        String workoutName = getIntent().getStringExtra("workoutName");
         String workoutDuration = getIntent().getStringExtra("workoutDuration");
         int workoutCalories = getIntent().getIntExtra("workoutCalories", 0);
+        String workoutExercises = getIntent().getStringExtra("workoutExercises");
         boolean workoutAborted = getIntent().getBooleanExtra("workoutAborted", false);
 
         // Aktualisiere die Texte mit den Werten
@@ -45,6 +51,7 @@ public class WorkoutFertigActivity extends AppCompatActivity {
             congratsText.setTextColor(Color.RED);
             durationText.setText("Gesamtzeit: 0");
             caloriesText.setText("Verbrannte Kalorien: 0 kcal");
+            saveWorkoutButton.setEnabled(false); // Deaktiviere den Save-Button bei abgebrochenem Workout
         } else {
             congratsText.setText("Geschafft!");
             congratsText.setTextColor(Color.GREEN);
@@ -56,11 +63,45 @@ public class WorkoutFertigActivity extends AppCompatActivity {
 
         // Setze den Click-Listener für den Save-Button
         saveWorkoutButton.setOnClickListener(v -> {
-            // Navigiere zurück zur MainActivity
-            Intent intent = new Intent(WorkoutFertigActivity.this, MainActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
-            finish();
+            if (!workoutAborted && !workoutSaved) {
+                saveWorkout(workoutName, workoutDuration, workoutCalories, workoutExercises);
+            }
         });
+
+        // Setze den Click-Listener für den Zurück-Button
+        backToMainButton.setOnClickListener(v -> {
+            navigateToMainActivity();
+        });
+    }
+
+    private void saveWorkout(String workoutName, String workoutDuration, int workoutCalories, String workoutExercises) {
+        WorkoutSession session = new WorkoutSession(
+                workoutName,
+                workoutDuration,
+                System.currentTimeMillis(),
+                workoutCalories,
+                workoutExercises
+        );
+        new Thread(() -> {
+            Datenbank.DatenbaseApp.getDatabase(getApplicationContext()).userDao().insertWorkout(session);
+            runOnUiThread(() -> {
+                Toast.makeText(this, "Workout gespeichert!", Toast.LENGTH_SHORT).show();
+                workoutSaved = true;
+                saveWorkoutButton.setEnabled(false);
+            });
+        }).start();
+    }
+
+    private void navigateToMainActivity() {
+        Intent intent = new Intent(WorkoutFertigActivity.this, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        finish();
+    }
+
+    @Override
+    public void onBackPressed() {
+        // Wenn der Zurück-Button des Geräts gedrückt wird, zum Hauptmenü navigieren
+        navigateToMainActivity();
     }
 }

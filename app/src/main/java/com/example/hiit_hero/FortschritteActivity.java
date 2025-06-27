@@ -89,7 +89,7 @@ public class FortschritteActivity extends AppCompatActivity {
         if (!weeklyWorkouts.isEmpty()) {
             weeklyRecyclerView.setVisibility(View.VISIBLE);
             findViewById(R.id.weeklyEmptyText).setVisibility(View.GONE);
-            WorkoutAdapter weeklyAdapter = new WorkoutAdapter(weeklyWorkouts, dateFormat);
+            WorkoutAdapter weeklyAdapter = new WorkoutAdapter(weeklyWorkouts, dateFormat, false);
             weeklyRecyclerView.setAdapter(weeklyAdapter);
         } else {
             weeklyRecyclerView.setVisibility(View.GONE);
@@ -100,7 +100,7 @@ public class FortschritteActivity extends AppCompatActivity {
         if (!monthlyWorkouts.isEmpty()) {
             monthlyRecyclerView.setVisibility(View.VISIBLE);
             findViewById(R.id.monthlyEmptyText).setVisibility(View.GONE);
-            WorkoutAdapter monthlyAdapter = new WorkoutAdapter(monthlyWorkouts, dateFormat);
+            WorkoutAdapter monthlyAdapter = new WorkoutAdapter(monthlyWorkouts, dateFormat, false);
             monthlyRecyclerView.setAdapter(monthlyAdapter);
         } else {
             monthlyRecyclerView.setVisibility(View.GONE);

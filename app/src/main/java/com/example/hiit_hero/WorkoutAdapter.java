@@ -3,6 +3,7 @@ package com.example.hiit_hero;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -13,6 +14,8 @@ public class WorkoutAdapter extends RecyclerView.Adapter<WorkoutAdapter.WorkoutV
     private List<WorkoutSession> workouts;
     private SimpleDateFormat dateFormat;
     private OnItemClickListener listener;
+    private OnDeleteClickListener deleteListener;
+    private boolean isCustomWorkoutList;
     private boolean longClickActive = false;
     public interface OnItemClickListener {
         void onItemClick(WorkoutSession workout);
@@ -26,13 +29,22 @@ public class WorkoutAdapter extends RecyclerView.Adapter<WorkoutAdapter.WorkoutV
         this.longClickListener = listener;
     }
 
-    public WorkoutAdapter(List<WorkoutSession> workouts, SimpleDateFormat dateFormat) {
+    public interface OnDeleteClickListener {
+        void onDeleteClick(WorkoutSession workout);
+    }
+
+    public WorkoutAdapter(List<WorkoutSession> workouts, SimpleDateFormat dateFormat, boolean isCustomWorkoutList) {
         this.workouts = workouts;
         this.dateFormat = dateFormat;
+        this.isCustomWorkoutList = isCustomWorkoutList;
     }
 
     public void setOnItemClickListener(OnItemClickListener listener) {
         this.listener = listener;
+    }
+
+    public void setOnDeleteClickListener(OnDeleteClickListener listener) {
+        this.deleteListener = listener;
     }
 
     @NonNull
@@ -50,6 +62,18 @@ public class WorkoutAdapter extends RecyclerView.Adapter<WorkoutAdapter.WorkoutV
         holder.durationText.setText(workout.getDuration());
         holder.dateText.setText(dateFormat.format(workout.getDate()));
         holder.caloriesText.setText(workout.getCaloriesBurned() + " kcal");
+
+        // Zeige den Lösch-Button nur bei benutzerdefinierten Workouts
+        if (isCustomWorkoutList) {
+            holder.deleteButton.setVisibility(View.VISIBLE);
+            holder.deleteButton.setOnClickListener(v -> {
+                if (deleteListener != null) {
+                    deleteListener.onDeleteClick(workout);
+                }
+            });
+        } else {
+            holder.deleteButton.setVisibility(View.GONE);
+        }
 
         // Setze den Click-Listener für das Item
         holder.itemView.setOnClickListener(v -> {
@@ -77,11 +101,20 @@ public class WorkoutAdapter extends RecyclerView.Adapter<WorkoutAdapter.WorkoutV
         return workouts.size();
     }
 
+    public void removeWorkout(WorkoutSession workout) {
+        int position = workouts.indexOf(workout);
+        if (position != -1) {
+            workouts.remove(position);
+            notifyItemRemoved(position);
+        }
+    }
+
     static class WorkoutViewHolder extends RecyclerView.ViewHolder {
         TextView nameText;
         TextView durationText;
         TextView dateText;
         TextView caloriesText;
+        ImageButton deleteButton;
 
         WorkoutViewHolder(View itemView) {
             super(itemView);
@@ -89,6 +122,7 @@ public class WorkoutAdapter extends RecyclerView.Adapter<WorkoutAdapter.WorkoutV
             durationText = itemView.findViewById(R.id.workoutDuration);
             dateText = itemView.findViewById(R.id.workoutDate);
             caloriesText = itemView.findViewById(R.id.workoutCalories);
+            deleteButton = itemView.findViewById(R.id.deleteWorkout);
         }
     }
 }

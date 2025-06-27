@@ -9,13 +9,10 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import android.widget.EditText;
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import java.util.ArrayList;
-import java.util.List;
 import android.widget.Button;
 import android.widget.Toast;
 import android.content.Intent;
-import java.util.Date;
 import android.content.SharedPreferences;
 
 public class WorkoutErstellen extends AppCompatActivity {
