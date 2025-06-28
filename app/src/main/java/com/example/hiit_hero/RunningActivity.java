@@ -32,7 +32,7 @@ import java.util.Locale;
  * und speichert die Workout-Daten in der lokalen Datenbank.
  * Die Activity zeigt Echtzeit-Updates der Lauf-Metriken an und kann
  * das Workout jederzeit beenden. Nach Abschluss wird das Workout
- * automatisch in der Datenbank gespeichert.
+ * automatisch in der lokalen Datenbank gespeichert.
  */
 
 public class RunningActivity extends AppCompatActivity {
@@ -45,14 +45,24 @@ public class RunningActivity extends AppCompatActivity {
     private TextView distanceValue;
     /** TextView für die Anzeige der aktuellen Geschwindigkeit */
     private TextView speedValue;
+    /** Button zum Starten des Lauf-Workouts */
+    private Button startButton;
+    /** Button zum Pausieren/Fortsetzen des Lauf-Workouts */
+    private Button pauseButton;
     /** Button zum Beenden des Lauf-Workouts */
-    private Button stopButton;
+    private Button finishButton;
     /** Thread für die Timer-Updates */
     private Thread timerThread;
     /** Flag, das angibt, ob das Tracking aktiv ist */
     private boolean isTracking = false;
+    /** Flag, das angibt, ob das Workout pausiert ist */
+    private boolean isPaused = false;
     /** Startzeit des Workouts in Millisekunden */
     private long startTime;
+    /** Gesamte Pausenzeit in Millisekunden */
+    private long totalPauseTime = 0;
+    /** Zeitpunkt, an dem das Workout pausiert wurde */
+    private long pauseStartTime;
     /** Gesamte zurückgelegte Distanz in Metern */
     private float totalDistance = 0;
     /** Letzte bekannte GPS-Position */
@@ -78,7 +88,7 @@ public class RunningActivity extends AppCompatActivity {
     /**
      * Wird beim Erstellen der Activity aufgerufen.
      * Initialisiert die UI-Elemente, überprüft die Standortberechtigungen
-     * und startet das Tracking, falls die Berechtigungen vorhanden sind.
+     * und bereitet die Buttons für das Workout vor.
      * @param savedInstanceState Bundle mit dem gespeicherten Zustand der Activity
      */
 
@@ -96,26 +106,35 @@ public class RunningActivity extends AppCompatActivity {
         timeValue = findViewById(R.id.timeValue);
         distanceValue = findViewById(R.id.distanceValue);
         speedValue = findViewById(R.id.speedValue);
-        stopButton = findViewById(R.id.stopButton);
+        startButton = findViewById(R.id.startButton);
+        pauseButton = findViewById(R.id.pauseButton);
+        finishButton = findViewById(R.id.finishButton);
 
-        stopButton.setOnClickListener(v -> stopTracking());
+        // Setze Click-Listener für alle Buttons
+        startButton.setOnClickListener(v -> startWorkout());
+        pauseButton.setOnClickListener(v -> togglePause());
+        finishButton.setOnClickListener(v -> finishWorkout());
 
-        if (checkLocationPermission()) {
-            startTracking();
-        } else {
+        // Überprüfe Standortberechtigungen
+        if (!checkLocationPermission()) {
             requestLocationPermission();
         }
     }
 
     /**
-     * Startet das GPS-Tracking für das Lauf-Workout.
+     * Startet das Lauf-Workout.
      * Initialisiert alle Tracking-Variablen, startet den LocationService
      * und registriert den BroadcastReceiver für Positionsupdates.
      * Startet auch einen Timer-Thread für kontinuierliche Zeit-Updates.
      */
-    private void startTracking() {
+    private void startWorkout() {
+        if (isTracking) return;
+        
         isTracking = true;
+        isPaused = false;
         startTime = SystemClock.uptimeMillis();
+        totalPauseTime = 0;
+        
         Intent serviceIntent = new Intent(this, LocationService.class);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             startForegroundService(serviceIntent);
@@ -123,14 +142,20 @@ public class RunningActivity extends AppCompatActivity {
             startService(serviceIntent);
         }
         LocalBroadcastManager.getInstance(this).registerReceiver(locationReceiver, new IntentFilter(LocationService.ACTION_LOCATION_BROADCAST));
+        
+        // Aktualisiere Button-States
+        startButton.setEnabled(false);
+        pauseButton.setEnabled(true);
+        finishButton.setEnabled(true);
+        
         Toast.makeText(this, "Lauf-Workout gestartet!", Toast.LENGTH_SHORT).show();
 
-        // Start a thread to update the timer
+        // Starte Timer-Thread
         if (timerThread == null) {
             timerThread = new Thread(() -> {
                 while (isTracking) {
                     runOnUiThread(() -> {
-                        long elapsedMillis = SystemClock.uptimeMillis() - startTime;
+                        long elapsedMillis = SystemClock.uptimeMillis() - startTime - totalPauseTime;
                         int hours = (int) (elapsedMillis / 3600000);
                         int minutes = (int) (elapsedMillis - hours * 3600000) / 60000;
                         int seconds = (int) (elapsedMillis - hours * 3600000 - minutes * 60000) / 1000;
@@ -148,14 +173,54 @@ public class RunningActivity extends AppCompatActivity {
     }
 
     /**
-     * Beendet das GPS-Tracking und speichert das Workout.
+     * Pausiert oder setzt das Workout fort.
+     * Stoppt oder startet den LocationService entsprechend und
+     * aktualisiert die Button-States und Timer-Berechnung.
+     */
+    private void togglePause() {
+        if (!isTracking) return;
+        
+        if (isPaused) {
+            // Workout fortsetzen
+            isPaused = false;
+            totalPauseTime += SystemClock.uptimeMillis() - pauseStartTime;
+            
+            Intent serviceIntent = new Intent(this, LocationService.class);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                startForegroundService(serviceIntent);
+            } else {
+                startService(serviceIntent);
+            }
+            LocalBroadcastManager.getInstance(this).registerReceiver(locationReceiver, new IntentFilter(LocationService.ACTION_LOCATION_BROADCAST));
+            
+            pauseButton.setText("Pausieren");
+            Toast.makeText(this, "Workout fortgesetzt!", Toast.LENGTH_SHORT).show();
+        } else {
+            // Workout pausieren
+            isPaused = true;
+            pauseStartTime = SystemClock.uptimeMillis();
+            
+            Intent serviceIntent = new Intent(this, LocationService.class);
+            stopService(serviceIntent);
+            LocalBroadcastManager.getInstance(this).unregisterReceiver(locationReceiver);
+            
+            pauseButton.setText("Fortsetzen");
+            Toast.makeText(this, "Workout pausiert!", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    /**
+     * Beendet das Lauf-Workout und speichert es in der Datenbank.
      * Stoppt den LocationService, berechnet die finalen Workout-Metriken
      * und speichert das Workout in der Datenbank. Zeigt eine Bestätigungsnachricht
      * an und beendet die Activity.
      */
-    private void stopTracking() {
+    private void finishWorkout() {
         if (!isTracking) return;
+        
         isTracking = false;
+        isPaused = false;
+        
         Intent serviceIntent = new Intent(this, LocationService.class);
         stopService(serviceIntent);
         LocalBroadcastManager.getInstance(this).unregisterReceiver(locationReceiver);
@@ -165,10 +230,11 @@ public class RunningActivity extends AppCompatActivity {
             timerThread = null;
         }
 
-        long elapsedMillis = SystemClock.uptimeMillis() - startTime;
+        // Berechne finale Workout-Metriken
+        long elapsedMillis = SystemClock.uptimeMillis() - startTime - totalPauseTime;
         String duration = String.format(Locale.getDefault(), "%02d:%02d:%02d",
                 (int) (elapsedMillis / 3600000),
-                (int) (elapsedMillis / 3600000) / 60000,
+                (int) (elapsedMillis / 60000) % 60,
                 (int) (elapsedMillis / 1000) % 60);
 
         float avgSpeedKmh = 0;
@@ -176,8 +242,8 @@ public class RunningActivity extends AppCompatActivity {
             avgSpeedKmh = (totalDistance / 1000) / (elapsedMillis / 3600000.0f);
         }
 
-        // TODO: Kalorienberechnung implementieren
-        int caloriesBurnt = (int) (totalDistance / 1000 * 70); // Grobe Schätzung: 70 kcal pro km
+        // Kalorienberechnung (grobe Schätzung: 70 kcal pro km)
+        int caloriesBurnt = (int) (totalDistance / 1000 * 70);
 
         WorkoutSession session = new WorkoutSession("Lauf-Workout", duration, System.currentTimeMillis(), caloriesBurnt, totalDistance / 1000, avgSpeedKmh);
 
@@ -226,7 +292,7 @@ public class RunningActivity extends AppCompatActivity {
 
     /**
      * Wird aufgerufen, wenn der Benutzer auf die Berechtigungsanfrage antwortet.
-     * Startet das Tracking, wenn die Berechtigung erteilt wurde, oder
+     * Aktiviert den Start-Button, wenn die Berechtigung erteilt wurde, oder
      * beendet die Activity mit einer Fehlermeldung.
      * @param requestCode Der Request-Code der Berechtigungsanfrage
      * @param permissions Array der angeforderten Berechtigungen
@@ -238,7 +304,7 @@ public class RunningActivity extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                startTracking();
+                Toast.makeText(this, "Standortberechtigung erteilt. Du kannst jetzt das Workout starten.", Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(this, "Standortberechtigung verweigert. Workout kann nicht gestartet werden.", Toast.LENGTH_LONG).show();
                 finish();
@@ -256,7 +322,7 @@ public class RunningActivity extends AppCompatActivity {
     protected void onDestroy() {
         // Ensure tracking stops if the activity is destroyed
         if (isTracking) {
-            stopTracking();
+            finishWorkout();
         }
         super.onDestroy();
     }
