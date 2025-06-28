@@ -24,19 +24,47 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import java.util.ArrayList;
 import java.util.Locale;
 
+/**
+ * Activity für Lauf-Workouts mit GPS-Tracking.
+ * Diese Activity ermöglicht es dem Benutzer, Lauf-Workouts durchzuführen
+ * und dabei verschiedene Metriken wie Zeit, Distanz und Geschwindigkeit
+ * zu verfolgen. Sie verwendet den LocationService für die GPS-Ortung
+ * und speichert die Workout-Daten in der lokalen Datenbank.
+ * Die Activity zeigt Echtzeit-Updates der Lauf-Metriken an und kann
+ * das Workout jederzeit beenden. Nach Abschluss wird das Workout
+ * automatisch in der Datenbank gespeichert.
+ */
+
 public class RunningActivity extends AppCompatActivity {
 
+    /** Request-Code für Standortberechtigungen */
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
-    private TextView timeValue, distanceValue, speedValue;
+    /** TextView für die Anzeige der Laufzeit */
+    private TextView timeValue;
+    /** TextView für die Anzeige der zurückgelegten Distanz */
+    private TextView distanceValue;
+    /** TextView für die Anzeige der aktuellen Geschwindigkeit */
+    private TextView speedValue;
+    /** Button zum Beenden des Lauf-Workouts */
     private Button stopButton;
+    /** Thread für die Timer-Updates */
     private Thread timerThread;
-
+    /** Flag, das angibt, ob das Tracking aktiv ist */
     private boolean isTracking = false;
+    /** Startzeit des Workouts in Millisekunden */
     private long startTime;
+    /** Gesamte zurückgelegte Distanz in Metern */
     private float totalDistance = 0;
+    /** Letzte bekannte GPS-Position */
     private Location lastLocation;
+    /** Liste aller GPS-Positionen während des Laufs */
     private ArrayList<Location> path = new ArrayList<>();
 
+    /**
+     * BroadcastReceiver für GPS-Positionsupdates vom LocationService.
+     * Empfängt kontinuierliche Updates der GPS-Position und aktualisiert
+     * die UI entsprechend.
+     */
     private BroadcastReceiver locationReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -46,6 +74,13 @@ public class RunningActivity extends AppCompatActivity {
             }
         }
     };
+
+    /**
+     * Wird beim Erstellen der Activity aufgerufen.
+     * Initialisiert die UI-Elemente, überprüft die Standortberechtigungen
+     * und startet das Tracking, falls die Berechtigungen vorhanden sind.
+     * @param savedInstanceState Bundle mit dem gespeicherten Zustand der Activity
+     */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +107,12 @@ public class RunningActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Startet das GPS-Tracking für das Lauf-Workout.
+     * Initialisiert alle Tracking-Variablen, startet den LocationService
+     * und registriert den BroadcastReceiver für Positionsupdates.
+     * Startet auch einen Timer-Thread für kontinuierliche Zeit-Updates.
+     */
     private void startTracking() {
         isTracking = true;
         startTime = SystemClock.uptimeMillis();
@@ -106,6 +147,12 @@ public class RunningActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Beendet das GPS-Tracking und speichert das Workout.
+     * Stoppt den LocationService, berechnet die finalen Workout-Metriken
+     * und speichert das Workout in der Datenbank. Zeigt eine Bestätigungsnachricht
+     * an und beendet die Activity.
+     */
     private void stopTracking() {
         if (!isTracking) return;
         isTracking = false;
@@ -142,6 +189,12 @@ public class RunningActivity extends AppCompatActivity {
         finish();
     }
 
+    /**
+     * Aktualisiert die UI mit neuen GPS-Daten.
+     * Berechnet die zurückgelegte Distanz basierend auf der neuen Position,
+     * aktualisiert die Gesamtdistanz und zeigt die aktuellen Werte in der UI an.
+     * @param location Die neue GPS-Position
+     */
     private void updateUI(Location location) {
         if (lastLocation != null) {
             totalDistance += lastLocation.distanceTo(location);
@@ -155,14 +208,30 @@ public class RunningActivity extends AppCompatActivity {
         speedValue.setText(String.format(Locale.getDefault(), "%.1f km/h", speedKmh));
     }
 
-
+    /**
+     * Überprüft, ob die Standortberechtigung erteilt wurde.
+     * @return true, wenn die Standortberechtigung erteilt wurde, sonst false
+     */
     private boolean checkLocationPermission() {
         return ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
     }
 
+    /**
+     * Fordert die Standortberechtigung an.
+     * Zeigt dem Benutzer den Berechtigungsdialog an.
+     */
     private void requestLocationPermission() {
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
     }
+
+    /**
+     * Wird aufgerufen, wenn der Benutzer auf die Berechtigungsanfrage antwortet.
+     * Startet das Tracking, wenn die Berechtigung erteilt wurde, oder
+     * beendet die Activity mit einer Fehlermeldung.
+     * @param requestCode Der Request-Code der Berechtigungsanfrage
+     * @param permissions Array der angeforderten Berechtigungen
+     * @param grantResults Array der Berechtigungsergebnisse
+     */
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -177,6 +246,12 @@ public class RunningActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Wird aufgerufen, wenn die Activity zerstört wird.
+     * Stellt sicher, dass das Tracking gestoppt wird, falls die Activity
+     * unerwartet beendet wird.
+     */
+
     @Override
     protected void onDestroy() {
         // Ensure tracking stops if the activity is destroyed
@@ -185,4 +260,4 @@ public class RunningActivity extends AppCompatActivity {
         }
         super.onDestroy();
     }
-}
+} 

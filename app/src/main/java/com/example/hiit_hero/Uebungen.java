@@ -12,10 +12,28 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+/**
+ * Activity für die Anzeige aller verfügbaren Übungen.
+ * Diese Activity zeigt eine Liste aller in der App verfügbaren Übungen an.
+ * Der Benutzer kann auf eine Übung klicken, um zur UebungAnsicht zu navigieren,
+ * wo detaillierte Informationen und Anleitungen zur jeweiligen Übung angezeigt werden.
+ * Die Activity verwendet eine einfache ListView mit einem ArrayAdapter,
+ * um die Übungsnamen anzuzeigen.
+ */
+
 public class Uebungen extends AppCompatActivity {
+    /** Array mit allen verfügbaren Übungsnamen */
     private final String[] allExercises = new String[]{
             "Liegestütze", "Plank", "Jumping Jacks", "Burpees", "Kniebeugen", "Mountain Climbers"
     };
+
+    /**
+     * Wird beim Erstellen der Activity aufgerufen.
+     * Initialisiert die UI-Elemente, erstellt eine ListView mit allen
+     * verfügbaren Übungen und setzt einen Click-Listener, um zur
+     * UebungAnsicht zu navigieren, wenn eine Übung ausgewählt wird.
+     * @param savedInstanceState Bundle mit dem gespeicherten Zustand der Activity
+     */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,4 +60,4 @@ public class Uebungen extends AppCompatActivity {
             }
         });
     }
-}
+} 

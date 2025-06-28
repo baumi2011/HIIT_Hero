@@ -11,7 +11,24 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import com.bumptech.glide.Glide;
 
+/**
+ * Activity für die detaillierte Ansicht einer einzelnen Übung.
+ * Diese Activity zeigt detaillierte Informationen über eine ausgewählte Übung an,
+ * einschließlich Beschreibung, betroffene Muskelgruppen, Schwierigkeitsgrad,
+ * Kalorienverbrauch und einem animierten GIF der Übung.
+ * Die Activity empfängt den Übungsnamen über Intent-Extras und lädt
+ * die entsprechenden Informationen und das passende Bild dynamisch.
+ */
+
 public class UebungAnsicht extends AppCompatActivity {
+
+    /**
+     * Wird beim Erstellen der Activity aufgerufen.
+     * Initialisiert die UI-Elemente und lädt die detaillierten Informationen
+     * für die ausgewählte Übung. Zeigt Beschreibung, Muskelgruppen,
+     * Schwierigkeitsgrad, Kalorienverbrauch und das entsprechende GIF an.
+     * @param savedInstanceState Bundle mit dem gespeicherten Zustand der Activity
+     */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

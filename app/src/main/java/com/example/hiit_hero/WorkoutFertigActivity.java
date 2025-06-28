@@ -12,13 +12,35 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+/**
+ * Activity, die nach Abschluss oder Abbruch eines Workouts angezeigt wird.
+ * Diese Activity zeigt eine Zusammenfassung des durchgeführten Workouts an,
+ * einschließlich der verbrachten Zeit, verbrannten Kalorien und der Möglichkeit,
+ * das Workout in der Datenbank zu speichern. Sie unterscheidet zwischen
+ * erfolgreich abgeschlossenen und abgebrochenen Workouts.
+ */
+
 public class WorkoutFertigActivity extends AppCompatActivity {
+    /** TextView für die Glückwunsch- oder Abbruch-Nachricht */
     private TextView congratsText;
+    /** TextView für die Anzeige der verbrannten Kalorien */
     private TextView caloriesText;
+    /** TextView für die Anzeige der Workout-Dauer */
     private TextView durationText;
+    /** Button zum Speichern des Workouts in der Datenbank */
     private Button saveWorkoutButton;
+    /** Button zur Rückkehr zum Hauptmenü */
     private Button backToMainButton;
+    /** Flag, das angibt, ob das Workout bereits gespeichert wurde */
     private boolean workoutSaved = false;
+
+    /**
+     * Wird beim Erstellen der Activity aufgerufen.
+     * Initialisiert die UI-Elemente, empfängt die Workout-Daten über Intent-Extras
+     * und konfiguriert die Anzeige basierend darauf, ob das Workout abgeschlossen
+     * oder abgebrochen wurde. Setzt auch die Click-Listener für die Buttons.
+     * @param savedInstanceState Bundle mit dem gespeicherten Zustand der Activity
+     */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +96,16 @@ public class WorkoutFertigActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Speichert das abgeschlossene Workout in der Datenbank.
+     * Erstellt ein neues WorkoutSession-Objekt mit den übergebenen Parametern
+     * und fügt es asynchron in die Datenbank ein. Zeigt eine Bestätigungsnachricht
+     * an und deaktiviert den Save-Button nach erfolgreichem Speichern.
+     * @param workoutName Name des Workouts
+     * @param workoutDuration Dauer des Workouts als String
+     * @param workoutCalories Anzahl der verbrannten Kalorien
+     * @param workoutExercises Liste der durchgeführten Übungen als String
+     */
     private void saveWorkout(String workoutName, String workoutDuration, int workoutCalories, String workoutExercises) {
         WorkoutSession session = new WorkoutSession(
                 workoutName,
@@ -92,12 +124,25 @@ public class WorkoutFertigActivity extends AppCompatActivity {
         }).start();
     }
 
+    /**
+     * Navigiert zurück zur MainActivity und löscht den Activity-Stack.
+     * Erstellt einen neuen Intent für die MainActivity und setzt Flags,
+     * um alle anderen Activities im Stack zu löschen. Dadurch wird
+     * sichergestellt, dass der Benutzer zum Hauptmenü zurückkehrt.
+     */
     private void navigateToMainActivity() {
         Intent intent = new Intent(WorkoutFertigActivity.this, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         finish();
     }
+
+    /**
+     * Überschreibt das Standard-Verhalten des Zurück-Buttons.
+     * Wenn der Benutzer den Zurück-Button des Geräts drückt, wird
+     * automatisch zur MainActivity navigiert, anstatt zur vorherigen
+     * Activity zurückzukehren.
+     */
 
     @Override
     public void onBackPressed() {

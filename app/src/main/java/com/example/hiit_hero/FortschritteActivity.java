@@ -24,15 +24,39 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ExecutorService;
 import Datenbank.DatenbaseApp;
 
+/**
+ * Activity für die Anzeige von Trainingsfortschritten.
+ * Diese Activity zeigt detaillierte Statistiken und Fortschritte des
+ * Benutzers an, einschließlich wöchentlicher und monatlicher Workout-Listen
+ * sowie Liniendiagramme für den Kalorienverbrauch über Zeit.
+ * Die Activity verwendet MPAndroidChart für die Visualisierung der Daten
+ * und RecyclerViews für die Anzeige der Workout-Listen. Sie filtert
+ * Workouts nach Zeiträumen und berechnet aggregierte Statistiken.
+ */
+
 public class FortschritteActivity extends AppCompatActivity {
+    /** RecyclerView für wöchentliche Workouts */
     private RecyclerView weeklyRecyclerView;
+    /** RecyclerView für monatliche Workouts */
     private RecyclerView monthlyRecyclerView;
+    /** DateFormat für die Datumsanzeige */
     private SimpleDateFormat dateFormat;
+    /** Liniendiagramm für wöchentliche Kalorien */
     private LineChart weeklyChart;
+    /** Liniendiagramm für monatliche Kalorien */
     private LineChart monthlyChart;
+    /** Datenbankinstanz */
     private DatenbaseApp db;
+    /** Executor Service für asynchrone Datenbankoperationen */
     private ExecutorService executorService;
 
+    /**
+     * Wird beim Erstellen der Activity aufgerufen.
+     * Initialisiert die UI-Elemente, konfiguriert die RecyclerViews
+     * und Liniendiagramme, und lädt die Workout-Daten aus der
+     * Datenbank für die Fortschrittsanzeige.
+     * @param savedInstanceState Bundle mit dem gespeicherten Zustand der Activity
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,6 +84,11 @@ public class FortschritteActivity extends AppCompatActivity {
         loadWorkouts();
     }
 
+    /**
+     * Lädt alle Workouts aus der Datenbank.
+     * Führt die Datenbankabfrage in einem separaten Thread aus und
+     * aktualisiert die UI im Hauptthread mit den geladenen Daten.
+     */
     private void loadWorkouts() {
         executorService.execute(() -> {
             List<WorkoutSession> allWorkouts = db.userDao().getAllWorkouts();
@@ -69,6 +98,13 @@ public class FortschritteActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Aktualisiert die UI mit den geladenen Workout-Daten.
+     * Filtert die Workouts nach wöchentlichen und monatlichen Zeiträumen,
+     * aktualisiert die RecyclerViews und erstellt die Liniendiagramme
+     * für die Kalorienvisualisierung.
+     * @param allWorkouts Liste aller Workouts aus der Datenbank
+     */
     private void updateUiWithWorkouts(List<WorkoutSession> allWorkouts) {
         List<WorkoutSession> weeklyWorkouts = new ArrayList<>();
         List<WorkoutSession> monthlyWorkouts = new ArrayList<>();
@@ -113,6 +149,15 @@ public class FortschritteActivity extends AppCompatActivity {
         setupChart(monthlyChart, monthlyWorkouts, 30);
     }
 
+    /**
+     * Konfiguriert ein Liniendiagramm für die Kalorienvisualisierung.
+     * Erstellt ein Liniendiagramm mit den Kalorienverbrauchsdaten
+     * für den angegebenen Zeitraum. Konfiguriert Achsen, Labels
+     * und das visuelle Erscheinungsbild des Diagramms.
+     * @param chart Das zu konfigurierende Liniendiagramm
+     * @param workouts Liste der Workouts für den Zeitraum
+     * @param days Anzahl der Tage für die X-Achse
+     */
     private void setupChart(LineChart chart, List<WorkoutSession> workouts, int days) {
         if (chart == null) return;
         List<Entry> entries = new ArrayList<>();

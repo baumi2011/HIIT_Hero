@@ -16,13 +16,34 @@ import java.util.concurrent.Executors;
 import Datenbank.DAO;
 import Datenbank.DatenbaseApp;
 
+/**
+ * Hauptaktivität der HIIT Hero App.
+ * Diese Activity dient als zentraler Einstiegspunkt der App und zeigt das Hauptmenü
+ * mit verschiedenen Navigationsoptionen an. Sie verwaltet die Navigation zu anderen
+ * Bereichen der App wie Workouts, Fortschritte, Profil und Einstellungen.
+ * Die Activity initialisiert auch die Datenbankverbindung und verwaltet die
+ * Sichtbarkeit des Fortschritt-Buttons basierend auf den Benutzereinstellungen.
+ */
 
 public class MainActivity extends AppCompatActivity {
 
+    /** Datenbankinstanz für den Zugriff auf die lokale Datenbank */
     private DatenbaseApp db;
+    /** Data Access Object für Datenbankoperationen */
     private DAO userDao;
+    /** Executor Service für asynchrone Datenbankoperationen */
     private ExecutorService executorService;
+    /** Button für die Fortschritte-Ansicht */
     private Button progressButton;
+
+    /**
+     * Wird beim Erstellen der Activity aufgerufen.
+     * Initialisiert die UI-Elemente, setzt die Datenbankverbindung auf,
+     * konfiguriert die Click-Listener für alle Navigationsbuttons und
+     * verwaltet die Sichtbarkeit des Fortschritt-Buttons basierend auf
+     * den Benutzereinstellungen.
+     * @param savedInstanceState Bundle mit dem gespeicherten Zustand der Activity
+     */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,6 +103,14 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Wird aufgerufen, wenn die Activity wieder sichtbar wird.
+     * Überprüft die aktuellen Einstellungen für Achievements und passt
+     * die Sichtbarkeit des Fortschritt-Buttons entsprechend an. Dies
+     * stellt sicher, dass Änderungen in den Einstellungen sofort
+     * sichtbar werden.
+     */
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -91,6 +120,12 @@ public class MainActivity extends AppCompatActivity {
             progressButton.setVisibility(achievementsEnabled ? View.VISIBLE : View.GONE);
         }
     }
+
+    /**
+     * Wird aufgerufen, wenn die Activity zerstört wird.
+     * Beendet den ExecutorService ordnungsgemäß, um Ressourcen freizugeben
+     * und Memory Leaks zu vermeiden.
+     */
 
     @Override
     protected void onDestroy() {

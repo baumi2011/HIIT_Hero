@@ -16,16 +16,45 @@ import com.bumptech.glide.Glide;
 import android.view.View;
 import androidx.core.content.ContextCompat;
 
+/**
+ * Activity für die Pause zwischen Übungen während eines Workouts.
+ * 
+ * Diese Activity zeigt eine Pause zwischen den einzelnen Übungen an und
+ * ermöglicht es dem Benutzer, sich zu erholen. Sie zeigt einen Countdown-Timer
+ * für die Pausenzeit und eine Vorschau der nächsten Übung mit entsprechendem
+ * Bild an.
+ * Die Activity startet automatisch einen 5-Sekunden-Timer und navigiert
+ * nach Ablauf zur nächsten Übung oder beendet das Workout, wenn es die
+ * letzte Übung war. Der Timer kann gestoppt und wieder gestartet werden.
+ */
+
 public class PauseActivity extends AppCompatActivity {
+    /** TextView für die Anzeige des Pausen-Timers */
     private TextView pauseTimer;
+    /** TextView für die Anzeige der nächsten Übung */
     private TextView nextExerciseText;
+    /** Button zum Starten/Stoppen des Timers */
     private Button controlButton;
+    /** Button zum Abbrechen des gesamten Workouts */
     private Button abortButton;
+    /** CountDownTimer für die Pausenzeit */
     private CountDownTimer countDownTimer;
+    /** Flag, das angibt, ob der Timer läuft */
     private boolean isTimerRunning = false;
+    /** Verbleibende Zeit in Millisekunden (Standard: 5 Sekunden) */
     private long timeLeftInMillis = 5000; // 5 Sekunden
+    /** Liste aller Übungen im aktuellen Workout */
     private ArrayList<String> exercises;
+    /** Index der aktuellen Übung in der Übungsliste */
     private int currentExerciseIndex;
+
+    /**
+     * Wird beim Erstellen der Activity aufgerufen.
+     * Initialisiert die UI-Elemente, lädt die Übungsliste und den aktuellen
+     * Index aus dem Intent, zeigt die nächste Übung an und startet automatisch
+     * den Pausen-Timer. Konfiguriert auch die Click-Listener für alle Buttons.
+     * @param savedInstanceState Bundle mit dem gespeicherten Zustand der Activity
+     */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,6 +111,13 @@ public class PauseActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Aktualisiert die Anzeige der nächsten Übung.
+     * Lädt das entsprechende Bild für die nächste Übung und zeigt
+     * den Übungsnamen an. Bei Jumping Jacks wird ein zusätzlicher
+     * Hinweis angezeigt. Zeigt "Workout beenden" an, wenn es die
+     * letzte Übung war.
+     */
     private void updateNextExercise() {
         if (exercises != null && currentExerciseIndex + 1 < exercises.size()) {
             String nextExercise = exercises.get(currentExerciseIndex + 1);
@@ -121,6 +157,13 @@ public class PauseActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Startet den Countdown-Timer für die Pause.
+     * Erstellt einen neuen CountDownTimer, der für 5 Sekunden läuft
+     * und die Anzeige jede Sekunde aktualisiert. Nach Ablauf wird
+     * automatisch zur nächsten Übung oder zur WorkoutFertigActivity
+     * navigiert, je nachdem ob es weitere Übungen gibt.
+     */
     private void startTimer() {
         countDownTimer = new CountDownTimer(timeLeftInMillis, 1000) {
             @Override
@@ -172,17 +215,33 @@ public class PauseActivity extends AppCompatActivity {
         controlButton.setText("Stop");
     }
 
+    /**
+     * Stoppt den laufenden Timer.
+     * Bricht den CountDownTimer ab und setzt die Button-Zustände zurück.
+     * Der Timer kann später wieder gestartet werden.
+     */
     private void stopTimer() {
         countDownTimer.cancel();
         isTimerRunning = false;
         controlButton.setText("Start");
     }
 
+    /**
+     * Aktualisiert die Timer-Anzeige.
+     * Konvertiert die verbleibende Zeit in Sekunden und formatiert
+     * sie als zweistellige Zahl für die Anzeige.
+     */
     private void updateCountDownText() {
         int seconds = (int) (timeLeftInMillis / 1000);
         String timeLeftFormatted = String.format("%02d", seconds);
         pauseTimer.setText(timeLeftFormatted);
     }
+
+    /**
+     * Wird aufgerufen, wenn die Activity zerstört wird.
+     * Bricht den Timer ab, um Ressourcen freizugeben und
+     * Memory Leaks zu vermeiden.
+     */
 
     @Override
     protected void onDestroy() {

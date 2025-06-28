@@ -17,15 +17,43 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+/**
+ * Activity für vordefinierte Workouts.
+ * Diese Activity zeigt eine Liste von vordefinierten Workouts an und
+ * ermöglicht es dem Benutzer, diese auszuwählen und zu starten. Sie
+ * bietet auch die Möglichkeit, direkt zu einem Lauf-Workout zu navigieren.
+ * Die Activity verwendet eine RecyclerView mit einem WorkoutAdapter,
+ * um die vordefinierten Workouts anzuzeigen. Der Benutzer kann ein
+ * Workout auswählen, dessen Details werden dann in Eingabefeldern
+ * angezeigt und können gestartet werden.
+ */
+
 public class VordefinierteWorkouts extends AppCompatActivity {
+    /** Eingabefeld für den Workout-Namen */
     private TextInputEditText workoutNameInput;
+    /** Eingabefeld für die Übungen */
     private TextInputEditText exercisesInput;
+    /** Eingabefeld für die Dauer */
     private TextInputEditText timeInput;
+    /** Eingabefeld für die Kalorien */
     private TextInputEditText caloriesInput;
+    /** RecyclerView für die Workout-Liste */
     private RecyclerView workoutsRecyclerView;
+    /** Adapter für die Workout-Liste */
     private WorkoutAdapter adapter;
+    /** Button zum Starten des ausgewählten Workouts */
     private Button startWorkoutButton;
+    /** Button zum Starten eines Lauf-Workouts */
     private Button startRunningButton;
+
+    /**
+     * Wird beim Erstellen der Activity aufgerufen.
+     * Initialisiert die UI-Elemente, erstellt eine Liste von vordefinierten
+     * Workouts und konfiguriert die RecyclerView mit dem WorkoutAdapter.
+     * Setzt Click-Listener für alle interaktiven Elemente und implementiert
+     * die Logik für die Workout-Auswahl und das Starten von Workouts.
+     * @param savedInstanceState Bundle mit dem gespeicherten Zustand der Activity
+     */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,36 +84,36 @@ public class VordefinierteWorkouts extends AppCompatActivity {
         // Erstelle eine Liste mit Beispiel-Workouts
         List<WorkoutSession> workouts = new ArrayList<>();
         Calendar calendar = Calendar.getInstance();
-
+        
         // Beispiel 1: HIIT Cardio
         WorkoutSession cardioWorkout = new WorkoutSession(
-                "HIIT Cardio",
-                "30 Minuten",
-                calendar.getTimeInMillis(),
-                300,
-                "Burpees, Mountain Climbers, Jumping Jacks"
+            "HIIT Cardio",
+            "30 Minuten",
+            calendar.getTimeInMillis(),
+            300,
+            "Burpees, Mountain Climbers, Jumping Jacks"
         );
         workouts.add(cardioWorkout);
 
         // Beispiel 2: HIIT Strength
         calendar.add(Calendar.DAY_OF_YEAR, -1);
         WorkoutSession strengthWorkout = new WorkoutSession(
-                "HIIT Strength",
-                "45 Minuten",
-                calendar.getTimeInMillis(),
-                400,
-                "Liegestütze, Kniebeugen, Plank"
+            "HIIT Strength",
+            "45 Minuten",
+            calendar.getTimeInMillis(),
+            400,
+            "Liegestütze, Kniebeugen, Plank"
         );
         workouts.add(strengthWorkout);
 
         // Beispiel 3: HIIT Full Body
         calendar.add(Calendar.DAY_OF_YEAR, -2);
         WorkoutSession fullBodyWorkout = new WorkoutSession(
-                "HIIT Full Body",
-                "40 Minuten",
-                calendar.getTimeInMillis(),
-                350,
-                "Burpees, Kniebeugen, Mountain Climbers, Plank"
+            "HIIT Full Body",
+            "40 Minuten",
+            calendar.getTimeInMillis(),
+            350,
+            "Burpees, Kniebeugen, Mountain Climbers, Plank"
         );
         workouts.add(fullBodyWorkout);
 
@@ -123,7 +151,7 @@ public class VordefinierteWorkouts extends AppCompatActivity {
             exercisesInput.setText(workout.getExercisesAsString());
             timeInput.setText(workout.getDuration());
             caloriesInput.setText(String.valueOf(workout.getCaloriesBurned()));
-
+            
             // Verstecke die RecyclerView
             workoutsRecyclerView.setVisibility(View.GONE);
         });
@@ -142,15 +170,15 @@ public class VordefinierteWorkouts extends AppCompatActivity {
                             intent.putExtra("EXERCISE_NAME", exercises.get(0));
                             intent.putStringArrayListExtra("exercises", new ArrayList<>(exercises));
                             intent.putExtra("currentExerciseIndex", 0);
-
+                            
                             // Übergebe die Workout-Werte direkt aus dem WorkoutSession-Objekt
                             String duration = workout.getDuration();
                             int calories = workout.getCaloriesBurned();
-
+                            
                             // Debug-Ausgabe
                             System.out.println("Workout Duration: " + duration);
                             System.out.println("Workout Calories: " + calories);
-
+                            
                             intent.putExtra("workoutDuration", duration);
                             intent.putExtra("workoutCalories", calories);
                             break;

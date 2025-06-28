@@ -15,17 +15,44 @@ import android.widget.Toast;
 import android.content.Intent;
 import android.content.SharedPreferences;
 
+/**
+ * Activity zum Erstellen benutzerdefinierter Workouts.
+ * Diese Activity ermöglicht es dem Benutzer, eigene Workouts zu erstellen
+ * und zu speichern. Sie bietet Eingabefelder für den Workout-Namen, die
+ * Dauer, den Kalorienverbrauch und eine Auswahl von Übungen.
+ * Die Activity verwendet einen Multi-Choice-Dialog für die Übungsauswahl
+ * und speichert das erstellte Workout in der lokalen Datenbank. Sie
+ * überprüft auch die Datenspeicherungseinstellungen des Benutzers.
+ */
+
 public class WorkoutErstellen extends AppCompatActivity {
+    /** Eingabefeld für die ausgewählten Übungen */
     private EditText exercisesInput;
+    /** Eingabefeld für den Workout-Namen */
     private EditText workoutNameInput;
+    /** Eingabefeld für die Workout-Dauer */
     private EditText timeInput;
+    /** Eingabefeld für den Kalorienverbrauch */
     private EditText caloriesInput;
+    /** Button zum Speichern und Starten des Workouts */
     private Button startWorkoutButton;
+    /** Array mit allen verfügbaren Übungen */
     private final String[] allExercises = new String[]{
             "Liegestütze", "Plank", "Jumping Jacks", "Burpees", "Kniebeugen", "Mountain Climbers"
     };
+    /** Array für den Zustand der Übungsauswahl im Dialog */
     private boolean[] checkedExercises;
+    /** Liste der ausgewählten Übungsindizes */
     private ArrayList<Integer> selectedExercises;
+
+    /**
+     * Wird beim Erstellen der Activity aufgerufen.
+     * Initialisiert die UI-Elemente, setzt Click-Listener für die
+     * Übungsauswahl und den Start-Button. Konfiguriert einen Multi-Choice-Dialog
+     * für die Übungsauswahl und implementiert die Validierung und Speicherung
+     * der Workout-Daten.
+     * @param savedInstanceState Bundle mit dem gespeicherten Zustand der Activity
+     */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

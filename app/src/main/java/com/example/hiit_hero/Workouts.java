@@ -9,7 +9,26 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+/**
+ * Activity für die Workout-Navigation.
+ * Diese Activity dient als zentraler Einstiegspunkt für alle Workout-bezogenen
+ * Funktionen der App. Sie bietet Buttons zur Navigation zu vordefinierten
+ * Workouts, zum Erstellen eigener Workouts, zur Anzeige der eigenen Workouts
+ * und zur Übungsübersicht.
+ * Die Activity fungiert als Hub für die verschiedenen Workout-Bereiche
+ * und ermöglicht eine intuitive Navigation zwischen den verschiedenen
+ * Workout-Funktionen.
+ */
+
 public class Workouts extends AppCompatActivity {
+
+    /**
+     * Wird beim Erstellen der Activity aufgerufen.
+     * Initialisiert die UI-Elemente und setzt Click-Listener für alle
+     * Navigationsbuttons. Jeder Button führt zu einer anderen Workout-
+     * Funktionalität der App.
+     * @param savedInstanceState Bundle mit dem gespeicherten Zustand der Activity
+     */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

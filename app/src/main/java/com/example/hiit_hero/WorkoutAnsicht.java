@@ -12,7 +12,25 @@ import android.content.Intent;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+/**
+ * Activity für die detaillierte Ansicht eines Workouts.
+ * Diese Activity zeigt detaillierte Informationen über ein ausgewähltes
+ * Workout an, einschließlich Name, Dauer, Kalorienverbrauch und Liste
+ * der enthaltenen Übungen. Sie ermöglicht es dem Benutzer, das Workout
+ * zu starten und zur Exercise-Activity zu navigieren.
+ * Die Activity empfängt die Workout-Daten über Intent-Extras und
+ * bereitet diese für die Anzeige und den Workout-Start vor.
+ */
+
 public class WorkoutAnsicht extends AppCompatActivity {
+
+    /**
+     * Wird beim Erstellen der Activity aufgerufen.
+     * Initialisiert die UI-Elemente, lädt die Workout-Daten aus dem Intent
+     * und zeigt diese in der entsprechenden Form an. Setzt auch den
+     * Click-Listener für den Start-Button, um das Workout zu beginnen.
+     * @param savedInstanceState Bundle mit dem gespeicherten Zustand der Activity
+     */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

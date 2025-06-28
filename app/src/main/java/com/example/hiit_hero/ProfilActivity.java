@@ -11,15 +11,43 @@ import Datenbank.DAO;
 import Datenbank.DatenbaseApp;
 import Datenbank.User;
 
+/**
+ * Activity für die Benutzerprofil-Verwaltung.
+ * Diese Activity ermöglicht es dem Benutzer, seine persönlichen Daten
+ * wie Name, Alter, Gewicht und Größe zu bearbeiten und zu speichern.
+ * Sie lädt vorhandene Daten aus der Datenbank und bietet eine
+ * benutzerfreundliche Oberfläche zur Dateneingabe.
+ * Die Activity verwendet asynchrone Datenbankoperationen mit einem
+ * ExecutorService, um die UI nicht zu blockieren. Sie unterstützt
+ * sowohl das Erstellen neuer Benutzerprofile als auch das Aktualisieren
+ * bestehender Profile.
+ */
+
 public class ProfilActivity extends AppCompatActivity {
+    /** Eingabefeld für den Namen */
     private TextInputEditText nameInput;
+    /** Eingabefeld für das Alter */
     private TextInputEditText ageInput;
+    /** Eingabefeld für das Gewicht */
     private TextInputEditText weightInput;
+    /** Eingabefeld für die Größe */
     private TextInputEditText heightInput;
+    /** Datenbankinstanz */
     private DatenbaseApp db;
+    /** Data Access Object für Benutzeroperationen */
     private DAO userDao;
+    /** Executor Service für asynchrone Datenbankoperationen */
     private ExecutorService executorService;
+    /** Aktueller Benutzer */
     private User currentUser;
+
+    /**
+     * Wird beim Erstellen der Activity aufgerufen.
+     * Initialisiert die Datenbankverbindung, die UI-Elemente und
+     * lädt vorhandene Benutzerdaten. Setzt auch Click-Listener
+     * für die Speichern- und Abbrechen-Buttons.
+     * @param savedInstanceState Bundle mit dem gespeicherten Zustand der Activity
+     */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +75,12 @@ public class ProfilActivity extends AppCompatActivity {
         cancelButton.setOnClickListener(v -> finish());
     }
 
+    /**
+     * Lädt gespeicherte Benutzerdaten aus der Datenbank.
+     * Führt die Datenbankabfrage in einem separaten Thread aus und
+     * aktualisiert die UI-Elemente im Hauptthread mit den geladenen
+     * Daten. Falls kein Benutzer existiert, bleiben die Felder leer.
+     */
     private void loadSavedData() {
         executorService.execute(() -> {
             currentUser = userDao.getFirstUser();
@@ -61,6 +95,13 @@ public class ProfilActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Speichert die eingegebenen Benutzerdaten.
+     * Validiert die Eingaben und speichert sie in der Datenbank.
+     * Erstellt einen neuen Benutzer, falls noch keiner existiert,
+     * oder aktualisiert den bestehenden Benutzer. Zeigt entsprechende
+     * Erfolgsmeldungen an und beendet die Activity nach dem Speichern.
+     */
     private void saveData() {
         String name = nameInput.getText().toString();
         String ageStr = ageInput.getText().toString();
@@ -108,6 +149,12 @@ public class ProfilActivity extends AppCompatActivity {
             Toast.makeText(this, "Bitte geben Sie gültige Zahlen ein", Toast.LENGTH_SHORT).show();
         }
     }
+
+    /**
+     * Wird aufgerufen, wenn die Activity zerstört wird.
+     * Beendet den ExecutorService ordnungsgemäß, um Ressourcen freizugeben
+     * und Memory Leaks zu vermeiden.
+     */
 
     @Override
     protected void onDestroy() {
