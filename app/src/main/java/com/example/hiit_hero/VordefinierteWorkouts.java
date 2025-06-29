@@ -88,9 +88,9 @@ public class VordefinierteWorkouts extends AppCompatActivity {
         // Beispiel 1: HIIT Cardio
         WorkoutSession cardioWorkout = new WorkoutSession(
             "HIIT Cardio",
-            "30 Minuten",
+            "2 Minuten",
             calendar.getTimeInMillis(),
-            300,
+            16,
             "Burpees, Mountain Climbers, Jumping Jacks"
         );
         workouts.add(cardioWorkout);
@@ -99,9 +99,9 @@ public class VordefinierteWorkouts extends AppCompatActivity {
         calendar.add(Calendar.DAY_OF_YEAR, -1);
         WorkoutSession strengthWorkout = new WorkoutSession(
             "HIIT Strength",
-            "45 Minuten",
+            "2 Minuten",
             calendar.getTimeInMillis(),
-            400,
+            10,
             "Liegestütze, Kniebeugen, Plank"
         );
         workouts.add(strengthWorkout);
@@ -110,9 +110,9 @@ public class VordefinierteWorkouts extends AppCompatActivity {
         calendar.add(Calendar.DAY_OF_YEAR, -2);
         WorkoutSession fullBodyWorkout = new WorkoutSession(
             "HIIT Full Body",
-            "40 Minuten",
+            "2:45 Minuten",
             calendar.getTimeInMillis(),
-            350,
+            18,
             "Burpees, Kniebeugen, Mountain Climbers, Plank"
         );
         workouts.add(fullBodyWorkout);

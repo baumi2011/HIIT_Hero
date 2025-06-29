@@ -47,8 +47,8 @@ public class Exercise extends AppCompatActivity implements SensorEventListener {
     private CountDownTimer countDownTimer;
     /** Flag, das angibt, ob der Timer läuft */
     private boolean isTimerRunning = false;
-    /** Verbleibende Zeit in Millisekunden (Standard: 5 Sekunden) */
-    private long timeLeftInMillis = 5000; // 5 Sekunden
+    /** Verbleibende Zeit in Millisekunden (Standard: 30 Sekunden) */
+    private long timeLeftInMillis = 30000; // 30 Sekunden
     /** Liste aller Übungen im aktuellen Workout */
     private ArrayList<String> exercises;
     /** Index der aktuellen Übung in der Übungsliste */

@@ -155,7 +155,12 @@ public class RunningActivity extends AppCompatActivity {
             timerThread = new Thread(() -> {
                 while (isTracking) {
                     runOnUiThread(() -> {
-                        long elapsedMillis = SystemClock.uptimeMillis() - startTime - totalPauseTime;
+                        long elapsedMillis;
+                        if (!isPaused) {
+                            elapsedMillis = SystemClock.uptimeMillis() - startTime - totalPauseTime;
+                        } else {
+                            elapsedMillis = pauseStartTime - startTime - totalPauseTime;
+                        }
                         int hours = (int) (elapsedMillis / 3600000);
                         int minutes = (int) (elapsedMillis - hours * 3600000) / 60000;
                         int seconds = (int) (elapsedMillis - hours * 3600000 - minutes * 60000) / 1000;

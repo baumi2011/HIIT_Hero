@@ -41,8 +41,8 @@ public class PauseActivity extends AppCompatActivity {
     private CountDownTimer countDownTimer;
     /** Flag, das angibt, ob der Timer läuft */
     private boolean isTimerRunning = false;
-    /** Verbleibende Zeit in Millisekunden (Standard: 5 Sekunden) */
-    private long timeLeftInMillis = 5000; // 5 Sekunden
+    /** Verbleibende Zeit in Millisekunden (Standard: 15 Sekunden) */
+    private long timeLeftInMillis = 15000; // 15 Sekunden
     /** Liste aller Übungen im aktuellen Workout */
     private ArrayList<String> exercises;
     /** Index der aktuellen Übung in der Übungsliste */
