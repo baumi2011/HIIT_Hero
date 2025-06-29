@@ -40,6 +40,7 @@ public class AppLauncher {
      * erneut anzuzeigen (z.B. für Testzwecke oder nach App-Reset).
      * @param context Der Application-Context
      */
+
     public static void resetFirstLaunch(Context context) {
         android.content.SharedPreferences sharedPreferences = context.getSharedPreferences("AppPreferences", Context.MODE_PRIVATE);
         android.content.SharedPreferences.Editor editor = sharedPreferences.edit();
